@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinguaSync — Real-Time Voice Translator</title>
+  <meta name="description" content="Two-way real-time voice translator powered by Deepgram STT and Groq AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent-a: #6c63ff;
+      --accent-b: #00d4aa;
+      --glow-a: rgba(108, 99, 255, .45);
+      --glow-b: rgba(0, 212, 170, .45);
+      --glass: rgba(255, 255, 255, .055);
+      --glass-border: rgba(255, 255, 255, .11);
+      --glass-hi: rgba(255, 255, 255, .09);
+      --text-1: #eef2ff;
+      --text-2: #94a3b8;
+      --text-3: #475569;
+      --danger: #f43f5e;
+      --success: #22c55e;
+      --r-lg: 20px;
+      --r-md: 14px;
+      --r-sm: 10px;
+      --ease: .26s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: #050818;
+      color: var(--text-1);
+      overflow-x: hidden;
+    }
+
+    /* ── background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 55% at 12% 18%, rgba(108, 99, 255, .16) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 45% at 88% 82%, rgba(0, 212, 170, .13) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 35% at 52% 52%, rgba(20, 14, 60, .5) 0%, transparent 70%);
+      animation: bgPulse 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgPulse {
+      0% {
+        opacity: .75;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(72px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 20s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 460px;
+      height: 460px;
+      background: rgba(108, 99, 255, .11);
+      top: -140px;
+      left: -100px;
+    }
+
+    .orb-2 {
+      width: 360px;
+      height: 360px;
+      background: rgba(0, 212, 170, .09);
+      bottom: -90px;
+      right: -70px;
+      animation-delay: -7s;
+    }
+
+    .orb-3 {
+      width: 220px;
+      height: 220px;
+      background: rgba(244, 63, 94, .07);
+      top: 40%;
+      left: 44%;
+      animation-delay: -14s;
+    }
+
+    @keyframes orbFloat {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(28px, 36px) scale(1.04);
+      }
+    }
+
+    /* ── layout ── */
+    .app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 16px 48px;
+      gap: 22px;
+    }
+
+    /* header */
+    header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.9rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      background: linear-gradient(130deg, #a78bfa, #6c63ff 38%, #00d4aa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -.5px;
+    }
+
+    .tagline {
+      font-size: .85rem;
+      color: var(--text-2);
+      letter-spacing: .03em;
+    }
+
+    /* ── keys card ── */
+    .keys-card {
+      width: 100%;
+      max-width: 640px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      backdrop-filter: blur(24px);
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .keys-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media(max-width:560px) {
+      .keys-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .key-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .key-group label {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--text-2);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .key-input {
+      width: 100%;
+      background: rgba(0, 0, 0, .22);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-sm);
+      color: var(--text-1);
+      font-family: 'Inter', monospace;
+      font-size: .85rem;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color var(--ease), box-shadow var(--ease);
+    }
+
+    .key-input:focus {
+      border-color: var(--accent-a);
+      box-shadow: 0 0 0 3px var(--glow-a);
+    }
+
+    .key-input::placeholder {
+      color: var(--text-3);
+    }
+
+    .connect-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-connect {
+      background: linear-gradient(135deg, var(--accent-a), #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-sm);
+      padding: 10px 22px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: .87rem;
+      cursor: pointer;
+      transition: all var(--ease);
+      box-shadow: 0 4px 18px var(--glow-a);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-connect:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 26px var(--glow-a);
+    }
+
+    .btn-connect:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: .77rem;
+      color: var(--text-2);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-3);
+      flex-shrink: 0;
+    }
+
+    .dot.ok {
+      background: var(--success);
+      box-shadow: 0 0 7px var(--success);
+      animation: blink 2.2s infinite;
+    }
+
+    .dot.err {
+      background: var(--danger);
+      box-shadow: 0 0 7px var(--danger);
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .45;
+      }
+    }
+
+    /* ── translator grid ── */
+    .translator {
+      width: 100%;
+      max-width: 1120px;
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    /* ── speaker panel ── */
+    .panel {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      backdrop-filter: blur(28px);
+      overflow: hidden;
+      transition: border-color var(--ease), box-shadow var(--ease);
+    }
+
+    .panel.panel-a {
+      border-top: 2px solid var(--accent-a);
+    }
+
+    .panel.panel-b {
+      border-top: 2px solid var(--accent-b);
+    }
+
+    .panel.panel-a.active {
+      border-color: var(--accent-a);
+      box-shadow: 0 0 38px var(--glow-a), 0 8px 38px rgba(0, 0, 0, .4);
+    }
+
+    .panel.panel-b.active {
+      border-color: var(--accent-b);
+      box-shadow: 0 0 38px var(--glow-b), 0 8px 38px rgba(0, 0, 0, .4);
+    }
+
+    .panel-head {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .97rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .ca {
+      color: var(--accent-a);
+    }
+
+    .cb {
+      color: var(--accent-b);
+    }
+
+    .lang-select {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-1);
+      font-family: 'Inter', sans-serif;
+      font-size: .8rem;
+      font-weight: 500;
+      padding: 5px 9px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color var(--ease);
+    }
+
+    .lang-select:focus {
+      border-color: var(--accent-a);
+    }
+
+    .lang-select option {
+      background: #0d1332;
+      color: var(--text-1);
+    }
+
+    .panel-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* waveform */
+    .waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 34px;
+    }
+
+    .bar {
+      width: 3px;
+      border-radius: 3px;
+      height: 5px;
+      transition: height .08s ease;
+    }
+
+    .bar.live {
+      animation: barDance .55s ease-in-out infinite alternate;
+    }
+
+    .bar:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .bar:nth-child(2) {
+      animation-delay: .05s;
+    }
+
+    .bar:nth-child(3) {
+      animation-delay: .1s;
+    }
+
+    .bar:nth-child(4) {
+      animation-delay: .15s;
+    }
+
+    .bar:nth-child(5) {
+      animation-delay: .2s;
+    }
+
+    .bar:nth-child(6) {
+      animation-delay: .15s;
+    }
+
+    .bar:nth-child(7) {
+      animation-delay: .1s;
+    }
+
+    .bar:nth-child(8) {
+      animation-delay: .05s;
+    }
+
+    .bar:nth-child(9) {
+      animation-delay: 0s;
+    }
+
+    @keyframes barDance {
+      0% {
+        height: 4px;
+      }
+
+      100% {
+        height: 26px;
+      }
+    }
+
+    /* text boxes */
+    .sbox {
+      background: rgba(0, 0, 0, .22);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      font-size: .92rem;
+      line-height: 1.65;
+      color: var(--text-2);
+      min-height: 80px;
+      max-height: 140px;
+      overflow-y: auto;
+      position: relative;
+      transition: color var(--ease);
+      word-break: break-word;
+    }
+
+    .sbox.has-text {
+      color: var(--text-1);
+    }
+
+    .sbox .ph {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-3);
+      font-size: .84rem;
+      pointer-events: none;
+      gap: 5px;
+    }
+
+    .interim-text {
+      color: var(--text-3);
+      font-style: italic;
+    }
+
+    /* controls */
+    .controls {
+      display: flex;
+      gap: 9px;
+    }
+
+    .btn-rec {
+      flex: 1;
+      padding: 11px 14px;
+      border: none;
+      border-radius: var(--r-md);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: .88rem;
+      cursor: pointer;
+      transition: all var(--ease);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .rec-a {
+      background: linear-gradient(135deg, var(--accent-a), #7c3aed);
+      color: #fff;
+      box-shadow: 0 4px 18px var(--glow-a);
+    }
+
+    .rec-a:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 26px var(--glow-a);
+    }
+
+    .rec-b {
+      background: linear-gradient(135deg, var(--accent-b), #0891b2);
+      color: #fff;
+      box-shadow: 0 4px 18px var(--glow-b);
+    }
+
+    .rec-b:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 26px var(--glow-b);
+    }
+
+    .rec-a.recording,
+    .rec-b.recording {
+      background: linear-gradient(135deg, var(--danger), #be123c);
+      box-shadow: 0 0 0 0 rgba(244, 63, 94, .5);
+      animation: recPulse 1.1s ease-out infinite;
+    }
+
+    @keyframes recPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, .55);
+      }
+
+      70% {
+        box-shadow: 0 0 0 13px rgba(244, 63, 94, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+      }
+    }
+
+    .btn-sm {
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid var(--glass-border);
+      color: var(--text-2);
+      border-radius: var(--r-md);
+      padding: 11px 13px;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+
+    .btn-sm:hover {
+      background: var(--glass-hi);
+      color: var(--text-1);
+    }
+
+    /* translation area */
+    .tr-section {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .tr-label {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tr-label::before,
+    .tr-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--glass-border);
+    }
+
+    .tbox {
+      background: rgba(0, 0, 0, .25);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      font-size: .9rem;
+      line-height: 1.6;
+      min-height: 68px;
+      max-height: 120px;
+      overflow-y: auto;
+      color: var(--text-2);
+      transition: color var(--ease);
+      word-break: break-word;
+    }
+
+    .tbox.has-text {
+      color: var(--text-1);
+    }
+
+    .speaking-ind {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      font-size: .78rem;
+      font-weight: 500;
+    }
+
+    .speaking-ind.show {
+      display: flex;
+    }
+
+    .s-dots {
+      display: flex;
+      gap: 3px;
+    }
+
+    .s-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      animation: sDot .8s ease infinite;
+    }
+
+    .s-dot:nth-child(2) {
+      animation-delay: .14s;
+    }
+
+    .s-dot:nth-child(3) {
+      animation-delay: .28s;
+    }
+
+    @keyframes sDot {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    /* status chip inside panel */
+    .panel-status {
+      font-size: .72rem;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+    }
+
+    /* ── middle column ── */
+    .mid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding-top: 56px;
+    }
+
+    .vline {
+      width: 2px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--accent-a), var(--accent-b));
+      border-radius: 2px;
+    }
+
+    .swap-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all var(--ease);
+      backdrop-filter: blur(12px);
+    }
+
+    .swap-btn:hover {
+      background: var(--glass-hi);
+      border-color: rgba(255, 255, 255, .22);
+      transform: rotate(180deg);
+    }
+
+    .auto-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 6px 9px;
+      border-radius: 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      cursor: pointer;
+      transition: all var(--ease);
+      backdrop-filter: blur(12px);
+      color: var(--text-3);
+      font-size: .65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      user-select: none;
+    }
+
+    .auto-btn.on {
+      background: rgba(34, 197, 94, .16);
+      border-color: rgba(34, 197, 94, .45);
+      color: #4ade80;
+      box-shadow: 0 0 14px rgba(34, 197, 94, .25);
+    }
+
+    .auto-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .auto-btn .auto-icon {
+      font-size: .92rem;
+    }
+
+    /* ── conversation log ── */
+    .log-section {
+      width: 100%;
+      max-width: 1120px;
+    }
+
+    .sec-title {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sec-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--glass-border);
+    }
+
+    .log-wrap {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      backdrop-filter: blur(22px);
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .log-wrap::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .log-wrap::-webkit-scrollbar-thumb {
+      background: var(--glass-border);
+      border-radius: 3px;
+    }
+
+    .log-entry {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: slideUp .28s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(7px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .av {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .76rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .av-a {
+      background: linear-gradient(135deg, var(--accent-a), #7c3aed);
+      color: #fff;
+    }
+
+    .av-b {
+      background: linear-gradient(135deg, var(--accent-b), #0891b2);
+      color: #fff;
+    }
+
+    .lc {
+      flex: 1;
+    }
+
+    .lo {
+      font-size: .86rem;
+      color: var(--text-1);
+      line-height: 1.45;
+    }
+
+    .lt {
+      font-size: .8rem;
+      color: var(--text-2);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .ltime {
+      font-size: .69rem;
+      color: var(--text-3);
+      margin-top: 3px;
+    }
+
+    .log-empty {
+      text-align: center;
+      padding: 22px;
+      color: var(--text-3);
+      font-size: .86rem;
+    }
+
+    /* ── toasts ── */
+    .toasts {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .toast {
+      background: rgba(12, 18, 52, .96);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      border-radius: 11px;
+      padding: 11px 18px;
+      font-size: .85rem;
+      color: var(--text-1);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      animation: tIn .28s ease, tOut .28s ease 3.7s forwards;
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: 90vw;
+    }
+
+    .toast.err {
+      border-color: var(--danger);
+    }
+
+    .toast.ok {
+      border-color: var(--success);
+    }
+
+    .toast.warn {
+      border-color: #f59e0b;
+    }
+
+    @keyframes tIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes tOut {
+      to {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+    }
+
+    /* spinner */
+    .spin {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, .18);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spinR .65s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    @keyframes spinR {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* responsive */
+    @media(max-width:760px) {
+      .translator {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+
+      .mid {
+        flex-direction: row;
+        padding-top: 0;
+      }
+
+      .vline {
+        width: 36px;
+        height: 2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="app">
+
+    <!-- Header -->
+    <header>
+      <div class="logo">🌐 LinguaSync</div>
+      <div class="tagline">Real-Time AI Voice Translator &middot; Deepgram STT &amp; TTS &middot; Groq LLM
+        (gpt-oss-120b)</div>
+    </header>
+
+    <!-- API Keys -->
+    <div class="keys-card">
+      <div class="keys-row">
+        <div class="key-group">
+          <label for="deepgramKey">Deepgram API Key</label>
+          <input type="password" id="deepgramKey" class="key-input" placeholder="deepgram key..." autocomplete="off" />
+        </div>
+        <div class="key-group">
+          <label for="groqKey">Groq API Key</label>
+          <input type="password" id="groqKey" class="key-input" placeholder="gsk_..." autocomplete="off" />
+        </div>
+      </div>
+      <div class="connect-row">
+        <button class="btn-connect" id="connectBtn" onclick="connectAll()">Connect</button>
+        <div class="status-row">
+          <span class="badge"><span class="dot" id="dgDot"></span> <span id="dgStatus">Deepgram</span></span>
+          <span class="badge"><span class="dot" id="groqDot"></span> <span id="groqStatus">Groq</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Translator -->
+    <div class="translator">
+
+      <!-- Panel A -->
+      <div class="panel panel-a" id="panelA">
+        <div class="panel-head">
+          <div class="panel-title"><span>🎙️</span><span class="ca">Speaker A</span></div>
+          <select class="lang-select" id="langA">
+            <option value="en">🇬🇧 English</option>
+            <option value="hi">🇮🇳 Hindi</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="de">🇩🇪 German</option>
+            <option value="zh">🇨🇳 Chinese</option>
+            <option value="ja">🇯🇵 Japanese</option>
+            <option value="ko">🇰🇷 Korean</option>
+            <option value="ru">🇷🇺 Russian</option>
+            <option value="ar">🇸🇦 Arabic</option>
+            <option value="pt">🇧🇷 Portuguese</option>
+            <option value="it">🇮🇹 Italian</option>
+            <option value="tr">🇹🇷 Turkish</option>
+            <option value="nl">🇳🇱 Dutch</option>
+            <option value="pl">🇵🇱 Polish</option>
+            <option value="sv">🇸🇪 Swedish</option>
+            <option value="uk">🇺🇦 Ukrainian</option>
+            <option value="id">🇮🇩 Indonesian</option>
+          </select>
+        </div>
+
+        <div class="panel-body">
+          <div class="waveform" id="waveA">
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+            <div class="bar" style="background:var(--accent-a)"></div>
+          </div>
+
+          <div class="sbox" id="spokenA"><span class="ph" id="phA">🎤 Press Record and speak...</span></div>
+
+          <div class="controls">
+            <button class="btn-rec rec-a" id="recBtnA" onclick="toggleRec('A')">🎤 Record</button>
+            <button class="btn-sm" title="Replay last translation" onclick="replay('A')">🔊</button>
+            <button class="btn-sm" title="Clear" onclick="clearPanel('A')">🗑️</button>
+          </div>
+
+          <div class="tr-section">
+            <div class="tr-label">Translation</div>
+            <div class="tbox" id="trA"><span style="color:var(--text-3);font-size:.82rem">Translation will appear
+                here...</span></div>
+            <div class="speaking-ind" id="spkA">
+              <div class="s-dots">
+                <div class="s-dot" style="background:var(--accent-a)"></div>
+                <div class="s-dot" style="background:var(--accent-a)"></div>
+                <div class="s-dot" style="background:var(--accent-a)"></div>
+              </div>
+              <span style="color:var(--accent-a)">Speaking...</span>
+            </div>
+          </div>
+          <div class="panel-status" id="statusA">Idle</div>
+        </div>
+      </div>
+
+      <!-- Middle -->
+      <div class="mid">
+        <div class="vline"></div>
+        <button class="swap-btn" title="Swap languages" onclick="swapLangs()">&#8644;</button>
+        <button class="auto-btn on" id="autoBtn"
+          title="Auto-Turn: Automatically listen to the other speaker after translation finishes"
+          onclick="toggleAutoSwitch()">
+          <span class="auto-icon">🔄</span>
+          <span class="auto-lbl">Auto-Turn</span>
+        </button>
+        <div class="vline"></div>
+      </div>
+
+      <!-- Panel B -->
+      <div class="panel panel-b" id="panelB">
+        <div class="panel-head">
+          <div class="panel-title"><span>🎙️</span><span class="cb">Speaker B</span></div>
+          <select class="lang-select" id="langB">
+            <option value="hi">🇮🇳 Hindi</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="de">🇩🇪 German</option>
+            <option value="zh">🇨🇳 Chinese</option>
+            <option value="ja">🇯🇵 Japanese</option>
+            <option value="ko">🇰🇷 Korean</option>
+            <option value="ru">🇷🇺 Russian</option>
+            <option value="ar">🇸🇦 Arabic</option>
+            <option value="pt">🇧🇷 Portuguese</option>
+            <option value="it">🇮🇹 Italian</option>
+            <option value="tr">🇹🇷 Turkish</option>
+            <option value="nl">🇳🇱 Dutch</option>
+            <option value="pl">🇵🇱 Polish</option>
+            <option value="sv">🇸🇪 Swedish</option>
+            <option value="uk">🇺🇦 Ukrainian</option>
+            <option value="id">🇮🇩 Indonesian</option>
+          </select>
+        </div>
+
+        <div class="panel-body">
+          <div class="waveform" id="waveB">
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+            <div class="bar" style="background:var(--accent-b)"></div>
+          </div>
+
+          <div class="sbox" id="spokenB"><span class="ph" id="phB">🎤 Press Record and speak...</span></div>
+
+          <div class="controls">
+            <button class="btn-rec rec-b" id="recBtnB" onclick="toggleRec('B')">🎤 Record</button>
+            <button class="btn-sm" title="Replay last translation" onclick="replay('B')">🔊</button>
+            <button class="btn-sm" title="Clear" onclick="clearPanel('B')">🗑️</button>
+          </div>
+
+          <div class="tr-section">
+            <div class="tr-label">Translation</div>
+            <div class="tbox" id="trB"><span style="color:var(--text-3);font-size:.82rem">Translation will appear
+                here...</span></div>
+            <div class="speaking-ind" id="spkB">
+              <div class="s-dots">
+                <div class="s-dot" style="background:var(--accent-b)"></div>
+                <div class="s-dot" style="background:var(--accent-b)"></div>
+                <div class="s-dot" style="background:var(--accent-b)"></div>
+              </div>
+              <span style="color:var(--accent-b)">Speaking...</span>
+            </div>
+          </div>
+          <div class="panel-status" id="statusB">Idle</div>
+        </div>
+      </div>
+
+    </div><!-- /.translator -->
+
+    <!-- Conversation Log -->
+    <div class="log-section">
+      <div class="sec-title">Conversation History</div>
+      <div class="log-wrap" id="logWrap">
+        <div class="log-empty" id="logEmpty">💬 Your conversation will appear here</div>
+      </div>
+    </div>
+
+  </div><!-- /.app -->
+
+  <div class="toasts" id="toasts"></div>
+
+  <script>
+    // ══════════════════════════════════════════════════════
+    //  CONFIG & STATE
+    // ══════════════════════════════════════════════════════
+    var DG_KEY = '';
+    var GROQ_KEY = '';
+
+    var sessions = { A: null, B: null };   // Deepgram WebSocket session
+    var recorders = { A: null, B: null };   // MediaRecorder instances
+    var audioCtxs = { A: null, B: null };  // AudioContext for waveform
+    var sharedMicStream = null;            // Persistent microphone stream (avoids re-prompting)
+    var active = { A: false, B: false };
+    var lastTr = { A: '', B: '' };       // last translated text
+    var lastUrl = { A: null, B: null };   // last TTS blob URL
+
+    // Language display names (for Groq prompt)
+    var LANG_NAMES = {
+      en: 'English', hi: 'Hindi', es: 'Spanish', fr: 'French', de: 'German',
+      zh: 'Chinese', ja: 'Japanese', ko: 'Korean', ru: 'Russian', ar: 'Arabic',
+      pt: 'Portuguese', it: 'Italian', tr: 'Turkish', nl: 'Dutch', pl: 'Polish',
+      sv: 'Swedish', uk: 'Ukrainian', id: 'Indonesian'
+    };
+
+    // Deepgram Aura TTS voices
+    var DG_TTS_VOICES = {
+      en: 'aura-asteria-en',
+      es: 'aura-2-aquila-es',
+      fr: 'aura-2-fr',
+      de: 'aura-2-de',
+      ja: 'aura-2-ja',
+      nl: 'aura-2-nl',
+      it: 'aura-2-it'
+    };
+
+    // ══════════════════════════════════════════════════════
+    //  CONNECTION
+    // ══════════════════════════════════════════════════════
+    async function connectAll() {
+      var dgk = document.getElementById('deepgramKey').value.trim();
+      var groqk = document.getElementById('groqKey').value.trim();
+      if (!dgk || !groqk) { toast('Enter both API keys', 'err'); return; }
+
+      var btn = document.getElementById('connectBtn');
+      btn.innerHTML = '<span class="spin"></span> Testing Groq...';
+      btn.disabled = true;
+
+      var groqOk = false;
+
+      // ── Test Groq via REST (supports CORS) ──
+      try {
+        var gr = await fetch('https://api.groq.com/openai/v1/models', {
+          headers: { Authorization: 'Bearer ' + groqk }
+        });
+        groqOk = gr.ok;
+      } catch (e) { }
+
+      // ── Deepgram: REST is CORS-blocked from file:// origins.
+      //    Accept the key immediately; the WebSocket handshake will
+      //    authenticate it for real (bad key → close code 1008). ──
+      DG_KEY = dgk;
+      setDot('dgDot', 'dgStatus', 'ok', 'Deepgram (verify on record)');
+
+      if (groqOk) {
+        GROQ_KEY = groqk;
+        setDot('groqDot', 'groqStatus', 'ok', 'Groq ✓');
+      } else {
+        setDot('groqDot', 'groqStatus', 'err', 'Groq ✗');
+      }
+
+      btn.disabled = false;
+      localStorage.setItem('dg_key', dgk);
+
+      if (groqOk) {
+        GROQ_KEY = groqk;
+        localStorage.setItem('groq_key', groqk);
+        btn.innerHTML = '✓ Ready';
+        btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+        btn.style.boxShadow = '0 4px 18px rgba(34,197,94,.4)';
+        toast('✅ Groq connected. Deepgram verified on first record.', 'ok');
+      } else {
+        btn.innerHTML = 'Connect';
+        toast('❌ Groq key is invalid — check it and retry', 'err');
+      }
+    }
+
+    function setDot(dotId, statusId, cls, text) {
+      document.getElementById(dotId).className = 'dot ' + cls;
+      document.getElementById(statusId).textContent = text;
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+      var dk = localStorage.getItem('dg_key');
+      var gk = localStorage.getItem('groq_key');
+      if (dk) document.getElementById('deepgramKey').value = dk;
+      if (gk) document.getElementById('groqKey').value = gk;
+      if (dk && gk) connectAll();
+    });
+
+    ['deepgramKey', 'groqKey'].forEach(function (id) {
+      document.getElementById(id).addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') connectAll();
+      });
+    });
+
+    // ══════════════════════════════════════════════════════
+    //  RECORDING — Deepgram WebSocket Streaming
+    // ══════════════════════════════════════════════════════
+    // Persistent microphone stream — requested ONCE, reused across all recordings.
+    // This prevents the browser from prompting for mic permission over and over.
+    async function getMicStream() {
+      if (sharedMicStream && sharedMicStream.active) {
+        var tracks = sharedMicStream.getAudioTracks();
+        if (tracks.length > 0 && tracks[0].readyState === 'live') {
+          return sharedMicStream;
+        }
+      }
+      sharedMicStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        },
+        video: false
+      });
+      return sharedMicStream;
+    }
+
+    function toggleRec(side) {
+      if (!DG_KEY || !GROQ_KEY) { toast('Connect your API keys first', 'err'); return; }
+
+      // Stop other side if running
+      var other = side === 'A' ? 'B' : 'A';
+      if (active[other]) stopRec(other);
+
+      active[side] ? stopRec(side) : startRec(side);
+    }
+
+    async function startRec(side) {
+      var lang = document.getElementById('lang' + side).value;
+
+      var stream;
+      try {
+        stream = await getMicStream();
+      } catch (e) {
+        toast('Microphone access denied: ' + e.message, 'err');
+        return;
+      }
+
+      active[side] = true;
+      setRecUI(side, true);
+      setStatus(side, 'Connecting to Deepgram...');
+      resetSpokenBox(side);
+      startWaveform(side, stream);
+
+      // Connect WebSocket first
+      var url = buildDGUrl(lang);
+      var ws = new WebSocket(url, ['token', DG_KEY]);
+      sessions[side] = ws;
+
+      attachDGHandlers(ws, side, lang, stream);
+    }
+
+    function buildDGUrl(lang) {
+      var params = [
+        'model=nova-2',
+        'language=' + encodeURIComponent(lang),
+        'smart_format=true',
+        'interim_results=true',
+        'utterance_end_ms=1500',
+        'vad_events=true',
+        'endpointing=500',
+        'punctuate=true'
+      ].join('&');
+      return 'wss://api.deepgram.com/v1/listen?' + params;
+    }
+
+    // Attach all Deepgram WS handlers
+    function attachDGHandlers(ws, side, lang, stream) {
+      var finalAccum = '';
+
+      ws.onopen = function () {
+        if (!active[side]) {
+          try { ws.close(); } catch (e) { }
+          return;
+        }
+        setStatus(side, 'Listening...');
+
+        // Stop any stale recorder on this side
+        if (recorders[side]) {
+          try {
+            if (recorders[side].state !== 'inactive') recorders[side].stop();
+          } catch (e) { }
+          recorders[side] = null;
+        }
+
+        // CRITICAL: MediaRecorder MUST start AFTER ws.onopen!
+        // The very first chunk emitted contains the container header (WebM EBML / Opus).
+        // Starting it after onopen guarantees that chunk 0 reaches Deepgram immediately.
+        var mimeType = bestMimeType();
+        var mr;
+        try {
+          mr = new MediaRecorder(stream, mimeType ? { mimeType: mimeType } : {});
+        } catch (e) {
+          mr = new MediaRecorder(stream);
+        }
+        recorders[side] = mr;
+
+        mr.ondataavailable = function (e) {
+          if (ws.readyState === WebSocket.OPEN && e.data && e.data.size > 0) {
+            ws.send(e.data);
+          }
+        };
+
+        mr.start(250);
+      };
+
+      ws.onmessage = function (evt) {
+        var msg;
+        try { msg = JSON.parse(evt.data); } catch (e) { return; }
+
+        if (msg.type === 'Results') {
+          var alt = msg.channel && msg.channel.alternatives && msg.channel.alternatives[0];
+          if (!alt) return;
+          var transcript = (alt.transcript || '').trim();
+          if (!transcript) return;
+
+          var spokenEl = document.getElementById('spoken' + side);
+          var ph = document.getElementById('ph' + side);
+          if (ph) ph.style.display = 'none';
+          if (spokenEl) {
+            spokenEl.classList.add('has-text');
+            if (msg.is_final) {
+              finalAccum += (finalAccum ? ' ' : '') + transcript;
+              spokenEl.innerHTML = escHtml(finalAccum);
+            } else {
+              spokenEl.innerHTML = escHtml(finalAccum) +
+                (finalAccum ? ' ' : '') +
+                '<span class="interim-text">' + escHtml(transcript) + '</span>';
+            }
+            spokenEl.scrollTop = spokenEl.scrollHeight;
+          }
+
+          // speech_final = Deepgram detected end of utterance → translate
+          if (msg.speech_final && finalAccum.trim()) {
+            enqueueTranslation(side, finalAccum.trim(), lang);
+            finalAccum = '';
+          }
+
+        } else if (msg.type === 'UtteranceEnd') {
+          // Fallback: flush any accumulated text if speech_final wasn't fired
+          if (finalAccum.trim()) {
+            enqueueTranslation(side, finalAccum.trim(), lang);
+            finalAccum = '';
+          }
+        }
+      };
+
+      ws.onerror = function () { /* onclose carries error info */ };
+
+      ws.onclose = function (evt) {
+        // Stop recording audio for this WS
+        if (recorders[side]) {
+          try {
+            if (recorders[side].state !== 'inactive') recorders[side].stop();
+          } catch (e) { }
+          recorders[side] = null;
+        }
+
+        if (!active[side]) return; // user hit Stop — intentional, ignore
+
+        if (evt.code === 1008 || evt.code === 1003) {
+          setDot('dgDot', 'dgStatus', 'err', 'Deepgram ✗');
+          toast('❌ Deepgram: Invalid API key (code ' + evt.code + ')', 'err');
+          stopRec(side);
+          return;
+        }
+
+        // Unexpected close → flush buffer and reconnect
+        if (finalAccum.trim()) {
+          enqueueTranslation(side, finalAccum.trim(), lang);
+          finalAccum = '';
+        }
+        setStatus(side, 'Reconnecting...');
+        sessions[side] = null;
+
+        setTimeout(function () {
+          if (!active[side]) return;
+          var ws2 = new WebSocket(buildDGUrl(lang), ['token', DG_KEY]);
+          sessions[side] = ws2;
+          attachDGHandlers(ws2, side, lang, stream);
+        }, 600);
+      };
+    }
+
+    function bestMimeType() {
+      var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+      for (var i = 0; i < types.length; i++) {
+        if (MediaRecorder.isTypeSupported(types[i])) return types[i];
+      }
+      return '';
+    }
+
+    function stopRec(side) {
+      active[side] = false;
+
+      if (recorders[side]) {
+        try {
+          if (recorders[side].state !== 'inactive') recorders[side].stop();
+        } catch (e) { }
+        recorders[side] = null;
+      }
+
+      if (sessions[side]) {
+        sessions[side].onclose = null;
+        try { sessions[side].close(); } catch (e) { }
+        sessions[side] = null;
+      }
+
+      if (audioCtxs[side]) {
+        try { audioCtxs[side].close(); } catch (e) { }
+        audioCtxs[side] = null;
+      }
+
+      // NOTE: We deliberately do NOT close sharedMicStream tracks here!
+      // Keeping sharedMicStream alive avoids repeated browser permission prompts
+      // whenever switching between Speaker A and Speaker B or recording new phrases.
+
+      setRecUI(side, false);
+      setStatus(side, 'Idle');
+    }
+
+    function setRecUI(side, on) {
+      var btn = document.getElementById('recBtn' + side);
+      var panel = document.getElementById('panel' + side);
+      var waveEl = document.getElementById('wave' + side);
+      var bars = waveEl ? waveEl.querySelectorAll('.bar') : [];
+
+      if (btn) {
+        if (on) {
+          btn.className = 'btn-rec rec-' + side.toLowerCase() + ' recording';
+          btn.innerHTML = '&#9632; Stop';
+        } else {
+          btn.className = 'btn-rec rec-' + side.toLowerCase();
+          btn.innerHTML = '🎤 Record';
+        }
+      }
+
+      if (panel) {
+        if (on) panel.classList.add('active');
+        else panel.classList.remove('active');
+      }
+
+      bars.forEach(function (b) {
+        if (!b) return;
+        if (on) {
+          b.classList.add('live');
+        } else {
+          b.classList.remove('live');
+          b.style.height = '5px';
+        }
+      });
+    }
+
+    function resetSpokenBox(side) {
+      var el = document.getElementById('spoken' + side);
+      if (el) {
+        el.innerHTML = '<span class="ph" id="ph' + side + '">🎤 Press Record and speak...</span>';
+        el.classList.remove('has-text');
+      }
+    }
+
+    // Real mic-level waveform via AnalyserNode
+    function startWaveform(side, stream) {
+      var AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      var ctx = new AudioCtx();
+      audioCtxs[side] = ctx;
+      var analyser = ctx.createAnalyser();
+      analyser.fftSize = 32;
+      var src = ctx.createMediaStreamSource(stream);
+      src.connect(analyser);
+      var data = new Uint8Array(analyser.frequencyBinCount);
+      var waveEl = document.getElementById('wave' + side);
+      var bars = waveEl ? waveEl.querySelectorAll('.bar') : [];
+
+      function draw() {
+        if (!active[side]) return;
+        analyser.getByteFrequencyData(data);
+        bars.forEach(function (b, i) {
+          if (!b) return;
+          var v = data[Math.floor(i * data.length / bars.length)];
+          b.style.height = Math.max(4, (v / 255) * 30) + 'px';
+          b.style.animation = 'none';
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function setStatus(side, text) {
+      var el = document.getElementById('status' + side);
+      if (el) el.textContent = text;
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  TRANSLATION QUEUE — ensures every utterance is processed
+    //  in order, even if previous TTS is still playing
+    // ══════════════════════════════════════════════════════
+    var trQueue = { A: [], B: [] };
+    var trBusy = { A: false, B: false };
+
+    function enqueueTranslation(side, text, srcLang) {
+      trQueue[side].push({ text: text, srcLang: srcLang });
+      processQueue(side);
+    }
+
+    function processQueue(side) {
+      if (trBusy[side] || trQueue[side].length === 0) return;
+      trBusy[side] = true;
+      var item = trQueue[side].shift();
+      handleTranslation(side, item.text, item.srcLang).finally(function () {
+        trBusy[side] = false;
+        processQueue(side); // pick up next item if any
+      });
+    }
+
+    var autoSwitch = true;
+
+    function toggleAutoSwitch() {
+      autoSwitch = !autoSwitch;
+      var btn = document.getElementById('autoBtn');
+      if (btn) {
+        if (autoSwitch) {
+          btn.className = 'auto-btn on';
+          toast('🔄 Auto-Turn: ON (mic automatically switches between speakers)', 'ok');
+        } else {
+          btn.className = 'auto-btn';
+          toast('⏸️ Auto-Turn: OFF (manual turn control)', 'warn');
+        }
+      }
+    }
+
+    async function handleTranslation(side, text, srcLang) {
+      var other = side === 'A' ? 'B' : 'A';
+      var tgtLang = document.getElementById('lang' + other).value;
+      var srcName = LANG_NAMES[srcLang] || srcLang;
+      var tgtName = LANG_NAMES[tgtLang] || tgtLang;
+
+      var trEl = document.getElementById('tr' + side);
+      if (trEl) trEl.innerHTML = '<span class="spin"></span> Translating...';
+      setStatus(side, 'Translating ' + srcName + ' → ' + tgtName + '...');
+
+      // Mute mic on this side so audio playback isn't captured by the microphone
+      if (active[side]) {
+        stopRec(side);
+      }
+
+      try {
+        var translated = await translateGroq(text, srcName, tgtName);
+        lastTr[side] = translated;
+        if (trEl) {
+          trEl.textContent = translated;
+          trEl.classList.add('has-text');
+        }
+        addLog(side, text, srcName, translated, tgtName);
+        setStatus(side, 'Speaking...');
+
+        // Play TTS (Native Hindi voice for Hindi, Deepgram Aura for English/others)
+        await speakTTS(translated, tgtLang, side);
+
+        setStatus(side, 'Idle');
+
+        // ── AUTO-SWITCH CONVERSATION ──
+        // Once the translation audio finishes playing, automatically switch to listening
+        // to the other user so conversation flows back-and-forth hands-free!
+        if (autoSwitch) {
+          toast('🎙️ Auto-switched to Speaker ' + other + ' (' + tgtName + ')', 'ok');
+          setTimeout(function () {
+            startRec(other);
+          }, 500);
+        }
+      } catch (err) {
+        if (trEl) trEl.textContent = '⚠️ ' + err.message;
+        toast('Translation error: ' + err.message, 'err');
+        setStatus(side, 'Error');
+      }
+    }
+
+    async function translateGroq(text, srcName, tgtName) {
+      if (srcName === tgtName) return text;
+
+      var r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + GROQ_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'openai/gpt-oss-120b',
+          messages: [{
+            role: 'system',
+            content: 'You are a professional interpreter. Output ONLY the translated text. No explanations, no quotes, no notes, no labels.'
+          }, {
+            role: 'user',
+            content: 'Translate from ' + srcName + ' to ' + tgtName + ':\n\n' + text
+          }],
+          temperature: 0.1,
+          max_tokens: 800
+        })
+      });
+
+      if (!r.ok) {
+        var e = await r.json().catch(function () { return {}; });
+        throw new Error((e.error && e.error.message) || 'HTTP ' + r.status);
+      }
+      var d = await r.json();
+      return d.choices[0].message.content.trim();
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  TTS — Deepgram Aura + Native Hindi Engine
+    // ══════════════════════════════════════════════════════
+    async function speakTTS(text, lang, side) {
+      var ind = document.getElementById('spk' + side);
+      if (ind) ind.classList.add('show');
+
+      try {
+        // 1. Hindi (hi): Deepgram Aura lacks a native Hindi voice model.
+        // Use high-fidelity native Hindi audio engine (Google TTS MP3 stream),
+        // which has natural Hindi accent, fluent pronunciation, and 100% reliability.
+        if (lang === 'hi') {
+          try {
+            await speakGoogleTTS(text, 'hi');
+            return;
+          } catch (e) {
+            console.warn('Google Hindi TTS fallback to SpeechSynthesis:', e);
+            await speakNativeTTS(text, 'hi');
+            return;
+          }
+        }
+
+        // 2. English & Aura-supported languages: use Deepgram Aura
+        if (DG_TTS_VOICES[lang] && DG_KEY) {
+          var voiceModel = DG_TTS_VOICES[lang];
+          var r = await fetch('https://api.deepgram.com/v1/speak?model=' + encodeURIComponent(voiceModel), {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Token ' + DG_KEY,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: text })
+          });
+
+          if (r.ok) {
+            var blob = await r.blob();
+            if (blob.size >= 100) {
+              var url = URL.createObjectURL(blob);
+              if (lastUrl[side]) URL.revokeObjectURL(lastUrl[side]);
+              lastUrl[side] = url;
+              await playAudio(url);
+              return;
+            }
+          }
+        }
+
+        // 3. Fallback for other languages: Google TTS -> SpeechSynthesis
+        try {
+          await speakGoogleTTS(text, lang);
+        } catch (e) {
+          await speakNativeTTS(text, lang);
+        }
+      } catch (err) {
+        console.warn('TTS error for ' + lang + ':', err);
+        await speakNativeTTS(text, lang);
+      } finally {
+        if (ind) ind.classList.remove('show');
+      }
+    }
+
+    async function speakGoogleTTS(text, lang) {
+      var clean = text.replace(/[*#_`]/g, '').trim();
+      if (!clean) return;
+
+      // Split into manageable chunks if longer than 180 chars (Google TTS query limit)
+      if (clean.length <= 180) {
+        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + encodeURIComponent(lang) + '&client=tw-ob&q=' + encodeURIComponent(clean);
+        return playAudio(url);
+      }
+
+      var parts = clean.match(/[^।?!.,\n]+[।?!.,\n]*/g) || [clean];
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i].trim();
+        if (!p) continue;
+        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + encodeURIComponent(lang) + '&client=tw-ob&q=' + encodeURIComponent(p);
+        await playAudio(url);
+      }
+    }
+
+    function speakNativeTTS(text, lang) {
+      return new Promise(function (resolve) {
+        if (!window.speechSynthesis) return resolve();
+        window.speechSynthesis.cancel(); // Clear any ongoing speech
+
+        var utter = new SpeechSynthesisUtterance(text);
+        var langTag = (lang === 'hi' ? 'hi-IN' : (lang === 'en' ? 'en-US' : lang));
+        utter.lang = langTag;
+
+        // Pick the best available voice (e.g. Google हिन्दी or Microsoft Swara for Hindi)
+        var voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          var match = voices.find(function (v) {
+            var vl = (v.lang || '').toLowerCase().replace('_', '-');
+            return vl === langTag.toLowerCase() || vl.startsWith(lang.toLowerCase());
+          });
+          if (match) utter.voice = match;
+        }
+
+        utter.rate = 0.95;
+        utter.pitch = 1.0;
+
+        var finished = false;
+        function finish() {
+          if (!finished) {
+            finished = true;
+            resolve();
+          }
+        }
+
+        utter.onend = finish;
+        utter.onerror = finish;
+
+        // Safety timeout in case browser synthesis onend fails to fire
+        setTimeout(finish, Math.max(3000, text.length * 140));
+
+        window.speechSynthesis.speak(utter);
+      });
+    }
+
+    function playAudio(url) {
+      return new Promise(function (res) {
+        var a = new Audio(url);
+        a.onended = res;
+        a.onerror = res;
+        a.play().catch(res);
+      });
+    }
+
+    async function replay(side) {
+      if (!lastTr[side]) { toast('Nothing to replay yet', 'warn'); return; }
+      var other = side === 'A' ? 'B' : 'A';
+      var lang = document.getElementById('lang' + other).value;
+      await speakTTS(lastTr[side], lang, side);
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  UI HELPERS
+    // ══════════════════════════════════════════════════════
+    function clearPanel(side) {
+      resetSpokenBox(side);
+      var trEl = document.getElementById('tr' + side);
+      trEl.innerHTML = '<span style="color:var(--text-3);font-size:.82rem">Translation will appear here...</span>';
+      trEl.classList.remove('has-text');
+      lastTr[side] = '';
+      setStatus(side, 'Idle');
+    }
+
+    function swapLangs() {
+      var la = document.getElementById('langA');
+      var lb = document.getElementById('langB');
+      var tmp = la.value;
+      la.value = lb.value;
+      lb.value = tmp;
+      toast('🔄 Languages swapped!', 'ok');
+    }
+
+    function addLog(side, orig, srcName, tr, tgtName) {
+      var wrap = document.getElementById('logWrap');
+      var emp = document.getElementById('logEmpty');
+      if (emp) emp.remove();
+
+      var now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var div = document.createElement('div');
+      div.className = 'log-entry';
+      div.innerHTML =
+        '<div class="av av-' + side.toLowerCase() + '">' + side + '</div>' +
+        '<div class="lc">' +
+        '<div class="lo">' + escHtml(orig) + ' <span style="font-size:.69rem;color:var(--text-3)">[' + srcName + ']</span></div>' +
+        '<div class="lt">&#8594; ' + escHtml(tr) + ' <span style="font-size:.68rem;color:var(--text-3)">[' + tgtName + ']</span></div>' +
+        '<div class="ltime">' + now + '</div>' +
+        '</div>';
+      wrap.appendChild(div);
+      wrap.scrollTop = wrap.scrollHeight;
+    }
+
+    function escHtml(s) {
+      var d = document.createElement('div');
+      d.appendChild(document.createTextNode(s));
+      return d.innerHTML;
+    }
+
+    function toast(msg, type) {
+      var c = document.getElementById('toasts');
+      var t = document.createElement('div');
+      t.className = 'toast ' + (type || '');
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 4200);
+    }
+  </script>
+</body>
+
+</html>
