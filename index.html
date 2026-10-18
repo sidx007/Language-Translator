@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LinguaSync — Real-Time Voice Translator</title>
   <meta name="description" content="Two-way real-time voice translator powered by Deepgram STT and Groq AI." />
+  <meta name="referrer" content="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -153,121 +154,145 @@
       letter-spacing: .03em;
     }
 
-    /* ── keys card ── */
-    .keys-card {
+    /* ── server card ── */
+    .server-card {
       width: 100%;
-      max-width: 640px;
+      max-width: 960px;
       background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: var(--r-lg);
-      backdrop-filter: blur(24px);
-      padding: 20px 24px;
+      backdrop-filter: blur(28px);
+      padding: 18px 22px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      box-shadow: 0 10px 36px rgba(0, 0, 0, .35);
     }
 
-    .keys-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    @media(max-width:560px) {
-      .keys-row {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .key-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .key-group label {
-      font-size: .72rem;
-      font-weight: 600;
-      color: var(--text-2);
-      letter-spacing: .07em;
-      text-transform: uppercase;
-    }
-
-    .key-input {
-      width: 100%;
-      background: rgba(0, 0, 0, .22);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--r-sm);
-      color: var(--text-1);
-      font-family: 'Inter', monospace;
-      font-size: .85rem;
-      padding: 9px 12px;
-      outline: none;
-      transition: border-color var(--ease), box-shadow var(--ease);
-    }
-
-    .key-input:focus {
-      border-color: var(--accent-a);
-      box-shadow: 0 0 0 3px var(--glow-a);
-    }
-
-    .key-input::placeholder {
-      color: var(--text-3);
-    }
-
-    .connect-row {
+    .server-header {
       display: flex;
       align-items: center;
-      gap: 14px;
+      justify-content: space-between;
+      gap: 16px;
       flex-wrap: wrap;
     }
 
-    .btn-connect {
-      background: linear-gradient(135deg, var(--accent-a), #8b5cf6);
-      color: #fff;
-      border: none;
-      border-radius: var(--r-sm);
-      padding: 10px 22px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: .87rem;
-      cursor: pointer;
-      transition: all var(--ease);
-      box-shadow: 0 4px 18px var(--glow-a);
+    .server-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .btn-connect:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 26px var(--glow-a);
+    .chip-8gb {
+      background: rgba(0, 212, 170, .14);
+      border: 1px solid rgba(0, 212, 170, .35);
+      color: var(--accent-b);
+      font-size: .72rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: .02em;
     }
 
-    .btn-connect:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .status-row {
+    .server-url-box {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
       flex-wrap: wrap;
-      font-size: .77rem;
-      color: var(--text-2);
     }
 
-    .badge {
-      display: inline-flex;
+    .server-url-box label {
+      font-size: .76rem;
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .server-input {
+      background: rgba(0, 0, 0, .3);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-sm);
+      color: var(--text-1);
+      font-family: 'Inter', monospace;
+      font-size: .82rem;
+      padding: 6px 10px;
+      outline: none;
+      width: 205px;
+      transition: border-color var(--ease);
+    }
+
+    .server-input:focus {
+      border-color: var(--accent-a);
+    }
+
+    .btn-check {
+      background: linear-gradient(135deg, var(--accent-a), #7c3aed);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-sm);
+      padding: 7px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+
+    .btn-check:hover {
+      box-shadow: 0 4px 14px var(--glow-a);
+      transform: translateY(-1px);
+    }
+
+    .services-status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .service-pill {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-sm);
+      padding: 8px 12px;
+      display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 9px;
+      transition: all var(--ease);
+    }
+
+    .service-pill:hover {
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .pill-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .pill-title {
+      font-size: .67rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 600;
+    }
+
+    .pill-val {
+      font-size: .78rem;
+      color: var(--text-1);
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .dot {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--text-3);
       flex-shrink: 0;
@@ -279,21 +304,307 @@
       animation: blink 2.2s infinite;
     }
 
+    .dot.warn {
+      background: #f59e0b;
+      box-shadow: 0 0 7px #f59e0b;
+    }
+
     .dot.err {
       background: var(--danger);
       box-shadow: 0 0 7px var(--danger);
     }
 
     @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .45; }
+    }
 
-      0%,
-      100% {
-        opacity: 1;
-      }
+    /* ── mode switcher ── */
+    .mode-switcher-container {
+      width: 100%;
+      max-width: 580px;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2px;
+    }
 
-      50% {
-        opacity: .45;
+    .mode-switcher {
+      display: flex;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--glass-border);
+      border-radius: 9999px;
+      padding: 5px;
+      gap: 6px;
+      width: 100%;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .mode-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1px solid transparent;
+      border-radius: 9999px;
+      background: transparent;
+      color: var(--text-2);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      user-select: none;
+    }
+
+    .mode-btn:hover {
+      color: var(--text-1);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.95), rgba(108, 99, 255, 0.9));
+      border-color: rgba(167, 139, 250, 0.4);
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(108, 99, 255, 0.45);
+    }
+
+    .mode-btn.mode-btn-online.active {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(0, 212, 170, 0.9));
+      border-color: rgba(0, 212, 170, 0.4);
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(0, 212, 170, 0.4);
+    }
+
+    .mode-icon {
+      font-size: 1.05rem;
+    }
+
+    .mode-text {
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .mode-badge {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+
+    .mode-btn.active .mode-badge {
+      background: rgba(255, 255, 255, 0.22);
+      opacity: 1;
+    }
+
+    /* ── keys card (Online Mode) ── */
+    .keys-card {
+      width: 100%;
+      max-width: 960px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      backdrop-filter: blur(28px);
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 10px 36px rgba(0, 0, 0, .35);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .keys-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .keys-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chip-cloud {
+      background: rgba(14, 165, 233, .15);
+      border: 1px solid rgba(14, 165, 233, .35);
+      color: #38bdf8;
+      font-size: .72rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+
+    .keys-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 680px) {
+      .keys-row {
+        grid-template-columns: 1fr;
       }
+      .mode-switcher {
+        flex-direction: column;
+        border-radius: var(--r-md);
+      }
+      .mode-btn {
+        border-radius: var(--r-sm);
+      }
+    }
+
+    .key-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .key-group label {
+      font-size: .74rem;
+      color: var(--text-2);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .key-group label a {
+      color: var(--accent-b);
+      text-decoration: none;
+      font-weight: 500;
+      text-transform: none;
+      font-size: .72rem;
+    }
+
+    .key-group label a:hover {
+      text-decoration: underline;
+    }
+
+    .key-input {
+      width: 100%;
+      background: rgba(0, 0, 0, .28);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-sm);
+      color: var(--text-1);
+      font-family: 'Inter', monospace;
+      font-size: .84rem;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color var(--ease), box-shadow var(--ease);
+    }
+
+    .key-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.22);
+    }
+
+    .key-input::placeholder {
+      color: var(--text-3);
+    }
+
+    .connect-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-connect {
+      background: linear-gradient(135deg, #0ea5e9, #00d4aa);
+      color: #031321;
+      border: none;
+      border-radius: var(--r-sm);
+      padding: 9px 22px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: .86rem;
+      cursor: pointer;
+      transition: all var(--ease);
+      box-shadow: 0 4px 18px rgba(0, 212, 170, .3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-connect:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0, 212, 170, .45);
+    }
+
+    .btn-connect:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .78rem;
+      color: var(--text-2);
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-sm);
+      padding: 5px 11px;
+    }
+
+    .online-features-tip {
+      font-size: .78rem;
+      color: var(--text-3);
+    }
+
+    /* Conversation log mode badges */
+    .log-mode-badge {
+      font-size: .65rem;
+      padding: 1px 7px;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      margin-left: 6px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .log-mode-badge.local {
+      background: rgba(124, 58, 237, 0.2);
+      color: #c4b5fd;
+      border: 1px solid rgba(124, 58, 237, 0.45);
+    }
+
+    .log-mode-badge.cloud {
+      background: rgba(14, 165, 233, 0.2);
+      color: #7dd3fc;
+      border: 1px solid rgba(14, 165, 233, 0.45);
     }
 
     /* ── translator grid ── */
@@ -962,6 +1273,47 @@
         height: 2px;
       }
     }
+
+    /* file:// notice banner */
+    .file-warn-banner {
+      width: 100%;
+      max-width: 960px;
+      background: rgba(245, 158, 11, .15);
+      border: 1px solid rgba(245, 158, 11, .45);
+      backdrop-filter: blur(20px);
+      border-radius: var(--r-md);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: .84rem;
+      color: #fde68a;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, .12);
+    }
+
+    .file-warn-banner a.server-link {
+      color: var(--accent-b);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .file-warn-banner .btn-open-server {
+      background: var(--accent-b);
+      color: #050818;
+      font-weight: 700;
+      font-size: .78rem;
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all var(--ease);
+    }
+
+    .file-warn-banner .btn-open-server:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px var(--glow-b);
+    }
   </style>
 </head>
 
@@ -975,27 +1327,118 @@
     <!-- Header -->
     <header>
       <div class="logo">🌐 LinguaSync</div>
-      <div class="tagline">Real-Time AI Voice Translator &middot; Deepgram STT &amp; TTS &middot; Groq LLM
-        (gpt-oss-120b)</div>
+      <div class="tagline" id="appTagline">100% Local AI Voice Translator &middot; 8GB RAM Optimized &middot; Faster-Whisper &middot; MarianMT Neural MT</div>
     </header>
 
-    <!-- API Keys -->
-    <div class="keys-card">
+    <!-- Mode Switcher (Local AI vs Online Cloud APIs) -->
+    <div class="mode-switcher-container">
+      <div class="mode-switcher" role="tablist" aria-label="Engine Mode">
+        <button type="button" class="mode-btn active" id="modeLocalBtn" onclick="setAppMode('local')">
+          <span class="mode-icon">💻</span>
+          <span class="mode-text">Local AI Mode</span>
+          <span class="mode-badge">Offline &amp; 8GB RAM</span>
+        </button>
+        <button type="button" class="mode-btn mode-btn-online" id="modeOnlineBtn" onclick="setAppMode('online')">
+          <span class="mode-icon">☁️</span>
+          <span class="mode-text">Online APIs</span>
+          <span class="mode-badge">Deepgram + Groq</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Protocol notice banner for file:// origins -->
+    <div class="file-warn-banner" id="fileWarnBanner" style="display:none;">
+      <span>⚠️ <strong>File protocol detected (<code>file://</code>)</strong>: Browsers restrict microphone access on local file paths. Please open <a href="http://127.0.0.1:8000" target="_blank" class="server-link">http://127.0.0.1:8000</a> in your browser for microphone permissions and full local streaming.</span>
+      <a href="http://127.0.0.1:8000" target="_blank" class="btn-open-server">Open http://127.0.0.1:8000 ↗</a>
+    </div>
+
+    <!-- Online Cloud APIs Control Panel -->
+    <div class="keys-card" id="onlineKeysCard" style="display:none;">
+      <div class="keys-header">
+        <div class="keys-title">
+          <span>☁️</span>
+          <span>Cloud AI Services</span>
+          <span class="chip-cloud">Online APIs Active</span>
+        </div>
+        <div class="status-badges">
+          <span class="badge"><span class="dot" id="dgDot"></span> <span id="dgStatus">Deepgram</span></span>
+          <span class="badge"><span class="dot" id="groqDot"></span> <span id="groqStatus">Groq</span></span>
+        </div>
+      </div>
+
       <div class="keys-row">
         <div class="key-group">
-          <label for="deepgramKey">Deepgram API Key</label>
-          <input type="password" id="deepgramKey" class="key-input" placeholder="deepgram key..." autocomplete="off" />
+          <label for="deepgramKey">Deepgram API Key <a href="https://console.deepgram.com/" target="_blank" rel="noopener">Get Key ↗</a></label>
+          <input type="password" id="deepgramKey" class="key-input" placeholder="Enter Deepgram token..." autocomplete="off" />
         </div>
         <div class="key-group">
-          <label for="groqKey">Groq API Key</label>
+          <label for="groqKey">Groq API Key <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Get Key ↗</a></label>
           <input type="password" id="groqKey" class="key-input" placeholder="gsk_..." autocomplete="off" />
         </div>
       </div>
+
       <div class="connect-row">
-        <button class="btn-connect" id="connectBtn" onclick="connectAll()">Connect</button>
-        <div class="status-row">
-          <span class="badge"><span class="dot" id="dgDot"></span> <span id="dgStatus">Deepgram</span></span>
-          <span class="badge"><span class="dot" id="groqDot"></span> <span id="groqStatus">Groq</span></span>
+        <button type="button" class="btn-connect" id="connectBtn" onclick="connectOnlineAll()">⚡ Connect Cloud APIs</button>
+        <div class="online-features-tip">
+          ⚡ Deepgram nova-2 streaming STT &middot; Groq gpt-oss-120b &middot; Aura &amp; Google TTS
+        </div>
+      </div>
+    </div>
+
+    <!-- Local AI Server Control Panel -->
+    <div class="server-card" id="localServerCard">
+      <div class="server-header">
+        <div class="server-title">
+          <span>⚡</span>
+          <span>Local AI Service Engine</span>
+          <span class="chip-8gb">8GB RAM Active</span>
+        </div>
+        <div class="server-url-box">
+          <label for="serverUrl">Backend Server:</label>
+          <input type="text" id="serverUrl" class="server-input" value="http://127.0.0.1:8000" />
+          <button class="btn-check" id="checkBtn" onclick="checkLocalServer()">Recheck</button>
+        </div>
+      </div>
+
+      <div class="services-status-grid">
+        <div class="service-pill" id="pillServer">
+          <span class="dot ok" id="serverDot"></span>
+          <div class="pill-info">
+            <span class="pill-title">Backend API</span>
+            <span class="pill-val" id="serverStatus">Connecting...</span>
+          </div>
+        </div>
+
+        <div class="service-pill" id="pillSTT">
+          <span class="dot ok" id="sttDot"></span>
+          <div class="pill-info">
+            <span class="pill-title">Speech-to-Text</span>
+            <span class="pill-val" id="sttStatus">Faster-Whisper (int8)</span>
+          </div>
+        </div>
+
+        <div class="service-pill" id="pillMT">
+          <span class="dot ok" id="mtDot"></span>
+          <div class="pill-info">
+            <span class="pill-title">Translation</span>
+            <span class="pill-val" id="mtStatus">MarianMT (Offline)</span>
+          </div>
+        </div>
+
+        <div class="service-pill" id="pillTTS">
+          <span class="dot ok" id="ttsDot"></span>
+          <div class="pill-info">
+            <span class="pill-title">Text-to-Speech</span>
+            <span class="pill-val" id="ttsStatus">Local Engine (SAPI5)</span>
+          </div>
+        </div>
+
+        <div class="service-pill" id="pillRAM">
+          <span class="dot ok" id="ramDot"></span>
+          <div class="pill-info">
+            <span class="pill-title">System Memory</span>
+            <span class="pill-val" id="ramStatus">RAM: Monitoring...</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1160,20 +1603,26 @@
 
   <script>
     // ══════════════════════════════════════════════════════
-    //  CONFIG & STATE
+    //  APP STATE & ENGINE MODE CONFIG
     // ══════════════════════════════════════════════════════
-    var DG_KEY = '';
-    var GROQ_KEY = '';
+    var APP_MODE = localStorage.getItem('app_mode') || 'local'; // 'local' or 'online'
+    var DG_KEY = localStorage.getItem('dg_key') || '';
+    var GROQ_KEY = localStorage.getItem('groq_key') || '';
+    var SERVER_URL = localStorage.getItem('server_url') || (window.location.protocol.startsWith('http') ? window.location.origin : 'http://127.0.0.1:8000');
+    var isServerOnline = false;
 
-    var sessions = { A: null, B: null };   // Deepgram WebSocket session
-    var recorders = { A: null, B: null };   // MediaRecorder instances
-    var audioCtxs = { A: null, B: null };  // AudioContext for waveform
-    var sharedMicStream = null;            // Persistent microphone stream (avoids re-prompting)
+    var sessions = { A: null, B: null };      // WebSocket sessions (Deepgram or Local)
+    var recorders = { A: null, B: null };     // MediaRecorder instances
+    var audioChunks = { A: [], B: [] };       // In-memory audio buffers
+    var audioCtxs = { A: null, B: null };     // AudioContext for waveform
+    var sharedMicStream = null;               // Persistent microphone stream
     var active = { A: false, B: false };
-    var lastTr = { A: '', B: '' };       // last translated text
-    var lastUrl = { A: null, B: null };   // last TTS blob URL
+    var lastTr = { A: '', B: '' };            // Last translated text
+    var lastUrl = { A: null, B: null };       // Last TTS blob URL
+    var currentSpeechFinal = { A: '', B: '' };
+    var hasTranscribed = { A: false, B: false };
 
-    // Language display names (for Groq prompt)
+    // Language display names
     var LANG_NAMES = {
       en: 'English', hi: 'Hindi', es: 'Spanish', fr: 'French', de: 'German',
       zh: 'Chinese', ja: 'Japanese', ko: 'Korean', ru: 'Russian', ar: 'Arabic',
@@ -1193,12 +1642,52 @@
     };
 
     // ══════════════════════════════════════════════════════
-    //  CONNECTION
+    //  MODE SWITCHER (LOCAL AI vs ONLINE CLOUD APIS)
     // ══════════════════════════════════════════════════════
-    async function connectAll() {
+    function setAppMode(mode, silent) {
+      APP_MODE = mode;
+      localStorage.setItem('app_mode', mode);
+
+      var localBtn = document.getElementById('modeLocalBtn');
+      var onlineBtn = document.getElementById('modeOnlineBtn');
+      var localCard = document.getElementById('localServerCard');
+      var onlineCard = document.getElementById('onlineKeysCard');
+      var tagline = document.getElementById('appTagline');
+      var banner = document.getElementById('fileWarnBanner');
+
+      if (mode === 'online') {
+        if (localBtn) localBtn.classList.remove('active');
+        if (onlineBtn) onlineBtn.classList.add('active');
+        if (localCard) localCard.style.display = 'none';
+        if (onlineCard) onlineCard.style.display = 'flex';
+        if (banner) banner.style.display = 'none';
+        if (tagline) {
+          tagline.innerHTML = 'Real-Time AI Voice Translator &middot; Cloud APIs &middot; Deepgram nova-2 STT &middot; Groq (openai/gpt-oss-120b)';
+        }
+        if (!silent) toast('☁️ Switched to Online Cloud APIs (Deepgram + Groq)', 'ok');
+      } else {
+        if (onlineBtn) onlineBtn.classList.remove('active');
+        if (localBtn) localBtn.classList.add('active');
+        if (onlineCard) onlineCard.style.display = 'none';
+        if (localCard) localCard.style.display = 'flex';
+        if (banner && window.location.protocol === 'file:') banner.style.display = 'flex';
+        if (tagline) {
+          tagline.innerHTML = '100% Local AI Voice Translator &middot; 8GB RAM Optimized &middot; Faster-Whisper &middot; MarianMT Neural MT';
+        }
+        if (!silent) toast('💻 Switched to Local AI Mode (Offline & Private)', 'ok');
+      }
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  ONLINE CLOUD API CONNECTION & VERIFICATION
+    // ══════════════════════════════════════════════════════
+    async function connectOnlineAll() {
       var dgk = document.getElementById('deepgramKey').value.trim();
       var groqk = document.getElementById('groqKey').value.trim();
-      if (!dgk || !groqk) { toast('Enter both API keys', 'err'); return; }
+      if (!dgk || !groqk) {
+        toast('Please enter both Deepgram and Groq API keys', 'err');
+        return;
+      }
 
       var btn = document.getElementById('connectBtn');
       btn.innerHTML = '<span class="spin"></span> Testing Groq...';
@@ -1206,67 +1695,118 @@
 
       var groqOk = false;
 
-      // ── Test Groq via REST (supports CORS) ──
+      // Test Groq via REST (supports CORS)
       try {
         var gr = await fetch('https://api.groq.com/openai/v1/models', {
           headers: { Authorization: 'Bearer ' + groqk }
         });
         groqOk = gr.ok;
-      } catch (e) { }
-
-      // ── Deepgram: REST is CORS-blocked from file:// origins.
-      //    Accept the key immediately; the WebSocket handshake will
-      //    authenticate it for real (bad key → close code 1008). ──
-      DG_KEY = dgk;
-      setDot('dgDot', 'dgStatus', 'ok', 'Deepgram (verify on record)');
-
-      if (groqOk) {
-        GROQ_KEY = groqk;
-        setDot('groqDot', 'groqStatus', 'ok', 'Groq ✓');
-      } else {
-        setDot('groqDot', 'groqStatus', 'err', 'Groq ✗');
+      } catch (e) {
+        console.warn('Groq verification error:', e);
       }
 
-      btn.disabled = false;
+      DG_KEY = dgk;
       localStorage.setItem('dg_key', dgk);
+      setDotStatus('dgDot', 'dgStatus', 'ok', 'Deepgram (Ready)');
 
       if (groqOk) {
         GROQ_KEY = groqk;
         localStorage.setItem('groq_key', groqk);
-        btn.innerHTML = '✓ Ready';
-        btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
-        btn.style.boxShadow = '0 4px 18px rgba(34,197,94,.4)';
-        toast('✅ Groq connected. Deepgram verified on first record.', 'ok');
+        setDotStatus('groqDot', 'groqStatus', 'ok', 'Groq (Connected)');
+        btn.innerHTML = '✓ Connected';
+        btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        btn.style.boxShadow = '0 4px 18px rgba(16, 185, 129, 0.4)';
+        toast('✅ Connected to Deepgram & Groq APIs!', 'ok');
       } else {
-        btn.innerHTML = 'Connect';
-        toast('❌ Groq key is invalid — check it and retry', 'err');
+        setDotStatus('groqDot', 'groqStatus', 'err', 'Groq (Failed)');
+        btn.innerHTML = '⚡ Connect Cloud APIs';
+        btn.style.background = '';
+        btn.style.boxShadow = '';
+        toast('❌ Groq key test failed — verify your API key and network', 'err');
+      }
+
+      btn.disabled = false;
+    }
+
+    function setDotStatus(dotId, statusId, cls, text) {
+      var d = document.getElementById(dotId);
+      if (d) d.className = 'dot ' + cls;
+      var s = document.getElementById(statusId);
+      if (s) s.textContent = text;
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  LOCAL SERVER HEALTH & SYSTEM MONITORING
+    // ══════════════════════════════════════════════════════
+    async function checkLocalServer(silent) {
+      var srvInput = document.getElementById('serverUrl');
+      if (srvInput && srvInput.value.trim()) {
+        SERVER_URL = srvInput.value.trim().replace(/\/+$/, '');
+        localStorage.setItem('server_url', SERVER_URL);
+      }
+
+      var checkBtn = document.getElementById('checkBtn');
+      if (checkBtn && !silent) {
+        checkBtn.innerHTML = '<span class="spin"></span> Checking...';
+        checkBtn.disabled = true;
+      }
+
+      try {
+        var resp = await fetch(SERVER_URL + '/api/status', { cache: 'no-store' });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        var data = await resp.json();
+
+        isServerOnline = true;
+        setDot('serverDot', 'ok');
+        document.getElementById('serverStatus').textContent = 'Online (FastAPI)';
+
+        setDot('sttDot', 'ok');
+        document.getElementById('sttStatus').textContent = data.stt.model || 'Faster-Whisper (int8)';
+
+        setDot('mtDot', 'ok');
+        var loadedCount = (data.translation && data.translation.loaded_models) ? data.translation.loaded_models.length : 0;
+        document.getElementById('mtStatus').textContent = loadedCount > 0 ? ('MarianMT (' + loadedCount + ' active)') : 'MarianMT (Offline)';
+
+        setDot('ttsDot', 'ok');
+        document.getElementById('ttsStatus').textContent = data.tts.engine || 'Local SAPI5 Engine';
+
+        setDot('ramDot', 'ok');
+        if (data.ram) {
+          document.getElementById('ramStatus').textContent = 'RAM: ' + data.ram.used_gb + ' / ' + data.ram.total_gb + ' GB (' + data.ram.percent + '%)';
+        }
+
+        if (!silent && APP_MODE === 'local') {
+          toast('✅ Connected to Local AI Backend Server (8GB RAM mode active)', 'ok');
+        }
+      } catch (err) {
+        isServerOnline = false;
+        setDot('serverDot', 'err');
+        document.getElementById('serverStatus').textContent = 'Offline (Click Recheck)';
+        setDot('sttDot', 'warn');
+        setDot('mtDot', 'warn');
+        setDot('ttsDot', 'warn');
+        setDot('ramDot', 'warn');
+        document.getElementById('ramStatus').textContent = 'RAM: Not connected';
+
+        if (!silent && APP_MODE === 'local') {
+          toast('❌ Cannot reach local backend at ' + SERVER_URL + '. Run: python server.py', 'err');
+        }
+      } finally {
+        if (checkBtn && !silent) {
+          checkBtn.innerHTML = 'Recheck';
+          checkBtn.disabled = false;
+        }
       }
     }
 
-    function setDot(dotId, statusId, cls, text) {
-      document.getElementById(dotId).className = 'dot ' + cls;
-      document.getElementById(statusId).textContent = text;
+    function setDot(dotId, state) {
+      var el = document.getElementById(dotId);
+      if (el) el.className = 'dot ' + state;
     }
 
-    window.addEventListener('DOMContentLoaded', function () {
-      var dk = localStorage.getItem('dg_key');
-      var gk = localStorage.getItem('groq_key');
-      if (dk) document.getElementById('deepgramKey').value = dk;
-      if (gk) document.getElementById('groqKey').value = gk;
-      if (dk && gk) connectAll();
-    });
-
-    ['deepgramKey', 'groqKey'].forEach(function (id) {
-      document.getElementById(id).addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') connectAll();
-      });
-    });
-
     // ══════════════════════════════════════════════════════
-    //  RECORDING — Deepgram WebSocket Streaming
+    //  MICROPHONE & AUDIO CAPTURE
     // ══════════════════════════════════════════════════════
-    // Persistent microphone stream — requested ONCE, reused across all recordings.
-    // This prevents the browser from prompting for mic permission over and over.
     async function getMicStream() {
       if (sharedMicStream && sharedMicStream.active) {
         var tracks = sharedMicStream.getAudioTracks();
@@ -1274,21 +1814,46 @@
           return sharedMicStream;
         }
       }
-      sharedMicStream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        },
-        video: false
-      });
-      return sharedMicStream;
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (window.location.protocol === 'file:') {
+          throw new Error('Microphone blocked on file:// URL. Please open http://127.0.0.1:8000 in your browser.');
+        }
+        throw new Error('Microphone access is not supported in this browser context.');
+      }
+
+      try {
+        sharedMicStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          },
+          video: false
+        });
+        return sharedMicStream;
+      } catch (err) {
+        if (window.location.protocol === 'file:') {
+          throw new Error('Permission blocked on file:// URL. Please open http://127.0.0.1:8000 in your browser to allow microphone access.');
+        }
+        throw err;
+      }
+    }
+
+    function bestMimeType() {
+      var types = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/ogg;codecs=opus',
+        'audio/wav'
+      ];
+      for (var i = 0; i < types.length; i++) {
+        if (MediaRecorder.isTypeSupported(types[i])) return types[i];
+      }
+      return '';
     }
 
     function toggleRec(side) {
-      if (!DG_KEY || !GROQ_KEY) { toast('Connect your API keys first', 'err'); return; }
-
-      // Stop other side if running
       var other = side === 'A' ? 'B' : 'A';
       if (active[other]) stopRec(other);
 
@@ -1296,8 +1861,27 @@
     }
 
     async function startRec(side) {
-      var lang = document.getElementById('lang' + side).value;
+      if (APP_MODE === 'online') {
+        if (!DG_KEY || !GROQ_KEY) {
+          toast('⚠️ Please enter and connect your Deepgram and Groq API keys first!', 'warn');
+          var dgi = document.getElementById('deepgramKey');
+          if (dgi && !dgi.value) dgi.focus();
+          else {
+            var gqi = document.getElementById('groqKey');
+            if (gqi && !gqi.value) gqi.focus();
+          }
+          return;
+        }
+      } else {
+        if (!isServerOnline) {
+          await checkLocalServer(true);
+          if (!isServerOnline) {
+            toast('⚠️ Local server is offline! Start it via: python server.py', 'warn');
+          }
+        }
+      }
 
+      var lang = document.getElementById('lang' + side).value;
       var stream;
       try {
         stream = await getMicStream();
@@ -1307,19 +1891,36 @@
       }
 
       active[side] = true;
+      hasTranscribed[side] = false;
+      audioChunks[side] = [];
+      currentSpeechFinal[side] = '';
       setRecUI(side, true);
-      setStatus(side, 'Connecting to Deepgram...');
       resetSpokenBox(side);
       startWaveform(side, stream);
 
-      // Connect WebSocket first
-      var url = buildDGUrl(lang);
-      var ws = new WebSocket(url, ['token', DG_KEY]);
-      sessions[side] = ws;
-
-      attachDGHandlers(ws, side, lang, stream);
+      if (APP_MODE === 'online') {
+        setStatus(side, 'Connecting to Deepgram (nova-2)...');
+        startRecOnline(side, lang, stream);
+      } else {
+        setStatus(side, 'Listening via local Faster-Whisper...');
+        startRecLocal(side, lang, stream);
+      }
     }
 
+    async function stopRec(side) {
+      if (!active[side]) return;
+      active[side] = false;
+      var lang = document.getElementById('lang' + side).value;
+      setStatus(side, 'Processing audio...');
+
+      if (APP_MODE === 'online') {
+        stopRecOnline(side, lang);
+      } else {
+        stopRecLocal(side, lang);
+      }
+    }
+
+    // ── ONLINE STT: Deepgram WebSocket Streaming ──
     function buildDGUrl(lang) {
       var params = [
         'model=nova-2',
@@ -1334,7 +1935,13 @@
       return 'wss://api.deepgram.com/v1/listen?' + params;
     }
 
-    // Attach all Deepgram WS handlers
+    function startRecOnline(side, lang, stream) {
+      var url = buildDGUrl(lang);
+      var ws = new WebSocket(url, ['token', DG_KEY]);
+      sessions[side] = ws;
+      attachDGHandlers(ws, side, lang, stream);
+    }
+
     function attachDGHandlers(ws, side, lang, stream) {
       var finalAccum = '';
 
@@ -1343,9 +1950,8 @@
           try { ws.close(); } catch (e) { }
           return;
         }
-        setStatus(side, 'Listening...');
+        setStatus(side, 'Listening via Deepgram (nova-2)...');
 
-        // Stop any stale recorder on this side
         if (recorders[side]) {
           try {
             if (recorders[side].state !== 'inactive') recorders[side].stop();
@@ -1353,9 +1959,6 @@
           recorders[side] = null;
         }
 
-        // CRITICAL: MediaRecorder MUST start AFTER ws.onopen!
-        // The very first chunk emitted contains the container header (WebM EBML / Opus).
-        // Starting it after onopen guarantees that chunk 0 reaches Deepgram immediately.
         var mimeType = bestMimeType();
         var mr;
         try {
@@ -1400,25 +2003,25 @@
             spokenEl.scrollTop = spokenEl.scrollHeight;
           }
 
-          // speech_final = Deepgram detected end of utterance → translate
           if (msg.speech_final && finalAccum.trim()) {
-            enqueueTranslation(side, finalAccum.trim(), lang);
+            if (!hasTranscribed[side]) {
+              hasTranscribed[side] = true;
+              enqueueTranslation(side, finalAccum.trim(), lang);
+            }
             finalAccum = '';
           }
-
         } else if (msg.type === 'UtteranceEnd') {
-          // Fallback: flush any accumulated text if speech_final wasn't fired
-          if (finalAccum.trim()) {
+          if (finalAccum.trim() && !hasTranscribed[side]) {
+            hasTranscribed[side] = true;
             enqueueTranslation(side, finalAccum.trim(), lang);
             finalAccum = '';
           }
         }
       };
 
-      ws.onerror = function () { /* onclose carries error info */ };
+      ws.onerror = function () { };
 
       ws.onclose = function (evt) {
-        // Stop recording audio for this WS
         if (recorders[side]) {
           try {
             if (recorders[side].state !== 'inactive') recorders[side].stop();
@@ -1426,21 +2029,21 @@
           recorders[side] = null;
         }
 
-        if (!active[side]) return; // user hit Stop — intentional, ignore
+        if (!active[side]) return;
 
         if (evt.code === 1008 || evt.code === 1003) {
-          setDot('dgDot', 'dgStatus', 'err', 'Deepgram ✗');
+          setDotStatus('dgDot', 'dgStatus', 'err', 'Deepgram ✗ (Key Invalid)');
           toast('❌ Deepgram: Invalid API key (code ' + evt.code + ')', 'err');
           stopRec(side);
           return;
         }
 
-        // Unexpected close → flush buffer and reconnect
-        if (finalAccum.trim()) {
+        if (finalAccum.trim() && !hasTranscribed[side]) {
+          hasTranscribed[side] = true;
           enqueueTranslation(side, finalAccum.trim(), lang);
           finalAccum = '';
         }
-        setStatus(side, 'Reconnecting...');
+        setStatus(side, 'Reconnecting Deepgram...');
         sessions[side] = null;
 
         setTimeout(function () {
@@ -1452,17 +2055,7 @@
       };
     }
 
-    function bestMimeType() {
-      var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
-      for (var i = 0; i < types.length; i++) {
-        if (MediaRecorder.isTypeSupported(types[i])) return types[i];
-      }
-      return '';
-    }
-
-    function stopRec(side) {
-      active[side] = false;
-
+    function stopRecOnline(side, lang) {
       if (recorders[side]) {
         try {
           if (recorders[side].state !== 'inactive') recorders[side].stop();
@@ -1470,9 +2063,10 @@
         recorders[side] = null;
       }
 
-      if (sessions[side]) {
-        sessions[side].onclose = null;
-        try { sessions[side].close(); } catch (e) { }
+      var ws = sessions[side];
+      if (ws) {
+        ws.onclose = null;
+        try { ws.close(); } catch (e) { }
         sessions[side] = null;
       }
 
@@ -1481,12 +2075,151 @@
         audioCtxs[side] = null;
       }
 
-      // NOTE: We deliberately do NOT close sharedMicStream tracks here!
-      // Keeping sharedMicStream alive avoids repeated browser permission prompts
-      // whenever switching between Speaker A and Speaker B or recording new phrases.
-
       setRecUI(side, false);
       setStatus(side, 'Idle');
+    }
+
+    // ── LOCAL STT: FastAPI WebSocket Streaming & REST Fallback ──
+    function startRecLocal(side, lang, stream) {
+      var mimeType = bestMimeType();
+      var mr;
+      try {
+        mr = new MediaRecorder(stream, mimeType ? { mimeType: mimeType } : {});
+      } catch (e) {
+        mr = new MediaRecorder(stream);
+      }
+      recorders[side] = mr;
+
+      var wsProto = SERVER_URL.startsWith('https') ? 'wss:' : 'ws:';
+      var wsHost = SERVER_URL.replace(/^https?:\/\//, '');
+      var wsUrl = wsProto + '//' + wsHost + '/ws/transcribe?lang=' + encodeURIComponent(lang);
+      var ws = null;
+      try {
+        ws = new WebSocket(wsUrl);
+        sessions[side] = ws;
+      } catch (e) {
+        console.warn('Local WS connect failed, fallback to REST:', e);
+      }
+
+      if (ws) {
+        ws.onopen = function () {
+          console.log('Local WS STT connected on side ' + side);
+        };
+        ws.onmessage = function (evt) {
+          try {
+            var msg = JSON.parse(evt.data);
+            if (msg.type === 'Results') {
+              var alt = msg.channel && msg.channel.alternatives && msg.channel.alternatives[0];
+              if (alt && alt.transcript) {
+                var transcript = alt.transcript.trim();
+                var spokenEl = document.getElementById('spoken' + side);
+                var ph = document.getElementById('ph' + side);
+                if (ph) ph.style.display = 'none';
+                if (spokenEl) {
+                  spokenEl.classList.add('has-text');
+                  if (msg.is_final) {
+                    currentSpeechFinal[side] = transcript;
+                    spokenEl.innerHTML = escHtml(transcript);
+                  } else {
+                    spokenEl.innerHTML = '<span class="interim-text">' + escHtml(transcript) + '</span>';
+                  }
+                  spokenEl.scrollTop = spokenEl.scrollHeight;
+                }
+                if (msg.speech_final && transcript) {
+                  if (!hasTranscribed[side]) {
+                    hasTranscribed[side] = true;
+                    enqueueTranslation(side, transcript, lang);
+                  }
+                  currentSpeechFinal[side] = '';
+                }
+              }
+            }
+          } catch (e) { }
+        };
+      }
+
+      mr.ondataavailable = function (e) {
+        if (e.data && e.data.size > 0) {
+          audioChunks[side].push(e.data);
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(e.data);
+          }
+        }
+      };
+
+      mr.start(250);
+    }
+
+    function stopRecLocal(side, lang) {
+      var ws = sessions[side];
+      if (ws) {
+        if (ws.readyState === WebSocket.OPEN) {
+          try {
+            ws.send(JSON.stringify({ action: 'finalize' }));
+          } catch (e) { }
+        }
+        setTimeout(function () {
+          try { ws.close(); } catch (e) { }
+          sessions[side] = null;
+        }, 400);
+      }
+
+      var mr = recorders[side];
+      if (mr) {
+        try {
+          if (mr.state !== 'inactive') mr.stop();
+        } catch (e) { }
+        recorders[side] = null;
+      }
+
+      if (audioCtxs[side]) {
+        try { audioCtxs[side].close(); } catch (e) { }
+        audioCtxs[side] = null;
+      }
+
+      setRecUI(side, false);
+
+      // Complete transcription via REST fallback if WebSocket transcript is pending
+      setTimeout(async function () {
+        if (!hasTranscribed[side] && audioChunks[side] && audioChunks[side].length > 0) {
+          var mimeType = bestMimeType() || 'audio/webm';
+          var audioBlob = new Blob(audioChunks[side], { type: mimeType });
+          if (audioBlob.size > 1000) {
+            setStatus(side, 'Transcribing locally...');
+            try {
+              var fd = new FormData();
+              fd.append('file', audioBlob, 'speech.' + (mimeType.includes('wav') ? 'wav' : 'webm'));
+              fd.append('lang', lang);
+              var r = await fetch(SERVER_URL + '/api/transcribe', {
+                method: 'POST',
+                body: fd
+              });
+              if (r.ok) {
+                var d = await r.json();
+                var text = (d.text || '').trim();
+                if (text && !hasTranscribed[side]) {
+                  hasTranscribed[side] = true;
+                  var spokenEl = document.getElementById('spoken' + side);
+                  var ph = document.getElementById('ph' + side);
+                  if (ph) ph.style.display = 'none';
+                  if (spokenEl) {
+                    spokenEl.classList.add('has-text');
+                    spokenEl.innerHTML = escHtml(text);
+                    spokenEl.scrollTop = spokenEl.scrollHeight;
+                  }
+                  enqueueTranslation(side, text, lang);
+                  return;
+                }
+              }
+            } catch (err) {
+              console.warn('REST transcription error:', err);
+            }
+          }
+        }
+        if (!hasTranscribed[side]) {
+          setStatus(side, 'Idle');
+        }
+      }, 500);
     }
 
     function setRecUI(side, on) {
@@ -1529,7 +2262,6 @@
       }
     }
 
-    // Real mic-level waveform via AnalyserNode
     function startWaveform(side, stream) {
       var AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
@@ -1563,27 +2295,10 @@
     }
 
     // ══════════════════════════════════════════════════════
-    //  TRANSLATION QUEUE — ensures every utterance is processed
-    //  in order, even if previous TTS is still playing
+    //  TRANSLATION QUEUE & DISPATCH
     // ══════════════════════════════════════════════════════
     var trQueue = { A: [], B: [] };
     var trBusy = { A: false, B: false };
-
-    function enqueueTranslation(side, text, srcLang) {
-      trQueue[side].push({ text: text, srcLang: srcLang });
-      processQueue(side);
-    }
-
-    function processQueue(side) {
-      if (trBusy[side] || trQueue[side].length === 0) return;
-      trBusy[side] = true;
-      var item = trQueue[side].shift();
-      handleTranslation(side, item.text, item.srcLang).finally(function () {
-        trBusy[side] = false;
-        processQueue(side); // pick up next item if any
-      });
-    }
-
     var autoSwitch = true;
 
     function toggleAutoSwitch() {
@@ -1595,9 +2310,25 @@
           toast('🔄 Auto-Turn: ON (mic automatically switches between speakers)', 'ok');
         } else {
           btn.className = 'auto-btn';
-          toast('⏸️ Auto-Turn: OFF (manual turn control)', 'warn');
+          toast('⏸️ Auto-Turn: OFF (manual control)', 'warn');
         }
       }
+    }
+
+    function enqueueTranslation(side, text, srcLang) {
+      if (!text || !text.trim()) return;
+      trQueue[side].push({ text: text.trim(), srcLang: srcLang });
+      processQueue(side);
+    }
+
+    function processQueue(side) {
+      if (trBusy[side] || trQueue[side].length === 0) return;
+      trBusy[side] = true;
+      var item = trQueue[side].shift();
+      handleTranslation(side, item.text, item.srcLang).finally(function () {
+        trBusy[side] = false;
+        processQueue(side);
+      });
     }
 
     async function handleTranslation(side, text, srcLang) {
@@ -1607,37 +2338,45 @@
       var tgtName = LANG_NAMES[tgtLang] || tgtLang;
 
       var trEl = document.getElementById('tr' + side);
-      if (trEl) trEl.innerHTML = '<span class="spin"></span> Translating...';
+      var engineName = APP_MODE === 'online' ? 'Groq (gpt-oss-120b)' : 'local MarianMT';
+      if (trEl) trEl.innerHTML = '<span class="spin"></span> Translating with ' + engineName + '...';
       setStatus(side, 'Translating ' + srcName + ' → ' + tgtName + '...');
 
-      // Mute mic on this side so audio playback isn't captured by the microphone
+      // Mute mic on this side so audio playback isn't captured
       if (active[side]) {
         stopRec(side);
       }
 
       try {
-        var translated = await translateGroq(text, srcName, tgtName);
+        var translated = '';
+        if (APP_MODE === 'online') {
+          translated = await translateGroq(text, srcName, tgtName);
+        } else {
+          translated = await translateLocal(text, srcLang, tgtLang);
+        }
         lastTr[side] = translated;
         if (trEl) {
           trEl.textContent = translated;
           trEl.classList.add('has-text');
         }
         addLog(side, text, srcName, translated, tgtName);
-        setStatus(side, 'Speaking...');
+        setStatus(side, 'Speaking translation...');
 
-        // Play TTS (Native Hindi voice for Hindi, Deepgram Aura for English/others)
-        await speakTTS(translated, tgtLang, side);
+        // Play TTS according to current mode
+        if (APP_MODE === 'online') {
+          await speakTTSOnline(translated, tgtLang, side);
+        } else {
+          await speakTTS(translated, tgtLang, side);
+        }
 
         setStatus(side, 'Idle');
 
         // ── AUTO-SWITCH CONVERSATION ──
-        // Once the translation audio finishes playing, automatically switch to listening
-        // to the other user so conversation flows back-and-forth hands-free!
         if (autoSwitch) {
           toast('🎙️ Auto-switched to Speaker ' + other + ' (' + tgtName + ')', 'ok');
           setTimeout(function () {
             startRec(other);
-          }, 500);
+          }, 600);
         }
       } catch (err) {
         if (trEl) trEl.textContent = '⚠️ ' + err.message;
@@ -1646,45 +2385,140 @@
       }
     }
 
+    // ── ONLINE TRANSLATION: Groq openai/gpt-oss-120b LLM ──
     async function translateGroq(text, srcName, tgtName) {
       if (srcName === tgtName) return text;
 
       var r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + GROQ_KEY, 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': 'Bearer ' + GROQ_KEY,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           model: 'openai/gpt-oss-120b',
-          messages: [{
-            role: 'system',
-            content: 'You are a professional interpreter. Output ONLY the translated text. No explanations, no quotes, no notes, no labels.'
-          }, {
-            role: 'user',
-            content: 'Translate from ' + srcName + ' to ' + tgtName + ':\n\n' + text
-          }],
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a professional interpreter. Output ONLY the translated text. No explanations, no quotes, no notes, no labels.'
+            },
+            {
+              role: 'user',
+              content: 'Translate from ' + srcName + ' to ' + tgtName + ':\n\n' + text
+            }
+          ],
           temperature: 0.1,
           max_tokens: 800
         })
       });
 
       if (!r.ok) {
-        var e = await r.json().catch(function () { return {}; });
-        throw new Error((e.error && e.error.message) || 'HTTP ' + r.status);
+        var errBody = await r.json().catch(function () { return {}; });
+        var msg = (errBody.error && errBody.error.message) || ('HTTP ' + r.status);
+        throw new Error(msg);
+      }
+      var d = await r.json();
+      return d.choices[0].message.content.trim();
+    }
+
+    // ── LOCAL TRANSLATION: MarianMT ──
+    async function translateLocal(text, srcLang, tgtLang) {
+      if (srcLang === tgtLang) return text;
+
+      // 1. Primary: Local /api/translate endpoint
+      try {
+        var resp = await fetch(SERVER_URL + '/api/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            source_lang: srcLang,
+            target_lang: tgtLang
+          })
+        });
+
+        if (resp.ok) {
+          var data = await resp.json();
+          if (data.translated_text) {
+            return data.translated_text.trim();
+          }
+        }
+      } catch (e) {
+        console.warn('Direct translate error, trying completions:', e);
+      }
+
+      // 2. Fallback: OpenAI-compatible /v1/chat/completions endpoint on local server
+      var r = await fetch(SERVER_URL + '/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'local-marian',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are an interpreter. Translate directly.'
+            },
+            {
+              role: 'user',
+              content: 'Translate from ' + (LANG_NAMES[srcLang] || srcLang) + ' to ' + (LANG_NAMES[tgtLang] || tgtLang) + ':\n\n' + text
+            }
+          ]
+        })
+      });
+
+      if (!r.ok) {
+        throw new Error('Local translation error (HTTP ' + r.status + ')');
       }
       var d = await r.json();
       return d.choices[0].message.content.trim();
     }
 
     // ══════════════════════════════════════════════════════
-    //  TTS — Deepgram Aura + Native Hindi Engine
+    //  TEXT-TO-SPEECH (TTS) ENGINES
     // ══════════════════════════════════════════════════════
-    async function speakTTS(text, lang, side) {
+
+    // ── ONLINE TTS: Deepgram Aura + Google Hindi Audio Stream ──
+    async function speakGoogleTTS(text, lang) {
+      var clean = text.replace(/[*#_`]/g, '').trim();
+      if (!clean) return;
+
+      // 1. Primary: Use backend /api/tts endpoint (fetches clean audio without referrer issues)
+      try {
+        var ttsUrl = SERVER_URL + '/api/tts?text=' + encodeURIComponent(clean) + '&lang=' + encodeURIComponent(lang);
+        var resp = await fetch(ttsUrl);
+        if (resp.ok) {
+          var blob = await resp.blob();
+          if (blob && blob.size >= 100) {
+            var blobUrl = URL.createObjectURL(blob);
+            await playAudio(blobUrl);
+            URL.revokeObjectURL(blobUrl);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Backend TTS proxy error, trying direct stream:', e);
+      }
+
+      // 2. Secondary fallback: Direct Google TTS stream with no-referrer policy
+      try {
+        var directUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + encodeURIComponent(lang) + '&client=tw-ob&q=' + encodeURIComponent(clean.slice(0, 180));
+        await playAudio(directUrl);
+        return;
+      } catch (e) {
+        console.warn('Direct Google TTS stream failed:', e);
+      }
+
+      // 3. Fallback: OS Web Speech API
+      await speakNativeTTS(clean, lang);
+    }
+
+    async function speakTTSOnline(text, lang, side) {
       var ind = document.getElementById('spk' + side);
       if (ind) ind.classList.add('show');
 
       try {
         // 1. Hindi (hi): Deepgram Aura lacks a native Hindi voice model.
-        // Use high-fidelity native Hindi audio engine (Google TTS MP3 stream),
-        // which has natural Hindi accent, fluent pronunciation, and 100% reliability.
+        // Use high-fidelity Hindi audio stream -> fallback to Web Speech
         if (lang === 'hi') {
           try {
             await speakGoogleTTS(text, 'hi');
@@ -1727,46 +2561,70 @@
           await speakNativeTTS(text, lang);
         }
       } catch (err) {
-        console.warn('TTS error for ' + lang + ':', err);
+        console.warn('TTS online error for ' + lang + ':', err);
         await speakNativeTTS(text, lang);
       } finally {
         if (ind) ind.classList.remove('show');
       }
     }
 
-    async function speakGoogleTTS(text, lang) {
-      var clean = text.replace(/[*#_`]/g, '').trim();
-      if (!clean) return;
+    // ── LOCAL TTS: FastAPI Engine (MP3/WAV) + Native OS Speech Fallback ──
+    async function speakTTS(text, lang, side) {
+      var ind = document.getElementById('spk' + side);
+      if (ind) ind.classList.add('show');
 
-      // Split into manageable chunks if longer than 180 chars (Google TTS query limit)
-      if (clean.length <= 180) {
-        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + encodeURIComponent(lang) + '&client=tw-ob&q=' + encodeURIComponent(clean);
-        return playAudio(url);
-      }
+      try {
+        // 1. Try local backend TTS (/api/tts) - handles Hindi + English natively
+        try {
+          var ttsUrl = SERVER_URL + '/api/tts?text=' + encodeURIComponent(text) + '&lang=' + encodeURIComponent(lang);
+          var audioResp = await fetch(ttsUrl);
+          if (audioResp.ok) {
+            var blob = await audioResp.blob();
+            if (blob && blob.size >= 100) {
+              var blobUrl = URL.createObjectURL(blob);
+              if (lastUrl[side]) URL.revokeObjectURL(lastUrl[side]);
+              lastUrl[side] = blobUrl;
+              await playAudio(blobUrl);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('Backend TTS playback failed, falling back to Google / Web Speech:', e);
+        }
 
-      var parts = clean.match(/[^।?!.,\n]+[।?!.,\n]*/g) || [clean];
-      for (var i = 0; i < parts.length; i++) {
-        var p = parts[i].trim();
-        if (!p) continue;
-        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + encodeURIComponent(lang) + '&client=tw-ob&q=' + encodeURIComponent(p);
-        await playAudio(url);
+        // 2. If Hindi and backend had error, try speakGoogleTTS directly
+        if (lang === 'hi') {
+          await speakGoogleTTS(text, 'hi');
+          return;
+        }
+
+        // 3. Client-side local Web Speech API (zero-latency OS voices for Hindi, Spanish, French, etc.)
+        await speakNativeTTS(text, lang);
+      } catch (err) {
+        console.warn('TTS error:', err);
+        await speakNativeTTS(text, lang);
+      } finally {
+        if (ind) ind.classList.remove('show');
       }
     }
 
     function speakNativeTTS(text, lang) {
       return new Promise(function (resolve) {
         if (!window.speechSynthesis) return resolve();
-        window.speechSynthesis.cancel(); // Clear any ongoing speech
+        window.speechSynthesis.cancel();
 
         var utter = new SpeechSynthesisUtterance(text);
         var langTag = (lang === 'hi' ? 'hi-IN' : (lang === 'en' ? 'en-US' : lang));
         utter.lang = langTag;
 
-        // Pick the best available voice (e.g. Google हिन्दी or Microsoft Swara for Hindi)
         var voices = window.speechSynthesis.getVoices();
         if (voices && voices.length > 0) {
           var match = voices.find(function (v) {
             var vl = (v.lang || '').toLowerCase().replace('_', '-');
+            var vn = (v.name || '').toLowerCase();
+            if (lang === 'hi') {
+              return vl.startsWith('hi') || vn.includes('hindi') || vn.includes('swara') || vn.includes('kalpana') || vn.includes('hemant');
+            }
             return vl === langTag.toLowerCase() || vl.startsWith(lang.toLowerCase());
           });
           if (match) utter.voice = match;
@@ -1785,8 +2643,6 @@
 
         utter.onend = finish;
         utter.onerror = finish;
-
-        // Safety timeout in case browser synthesis onend fails to fire
         setTimeout(finish, Math.max(3000, text.length * 140));
 
         window.speechSynthesis.speak(utter);
@@ -1795,10 +2651,21 @@
 
     function playAudio(url) {
       return new Promise(function (res) {
-        var a = new Audio(url);
+        var a = new Audio();
+        a.referrerPolicy = 'no-referrer';
+        a.src = url;
         a.onended = res;
-        a.onerror = res;
-        a.play().catch(res);
+        a.onerror = function (e) {
+          console.warn('Audio element error:', e);
+          res();
+        };
+        var p = a.play();
+        if (p && p.catch) {
+          p.catch(function (e) {
+            console.warn('Audio play catch:', e);
+            res();
+          });
+        }
       });
     }
 
@@ -1806,11 +2673,16 @@
       if (!lastTr[side]) { toast('Nothing to replay yet', 'warn'); return; }
       var other = side === 'A' ? 'B' : 'A';
       var lang = document.getElementById('lang' + other).value;
-      await speakTTS(lastTr[side], lang, side);
+
+      if (APP_MODE === 'online') {
+        await speakTTSOnline(lastTr[side], lang, side);
+      } else {
+        await speakTTS(lastTr[side], lang, side);
+      }
     }
 
     // ══════════════════════════════════════════════════════
-    //  UI HELPERS
+    //  UI HELPERS & CONVERSATION LOG
     // ══════════════════════════════════════════════════════
     function clearPanel(side) {
       resetSpokenBox(side);
@@ -1836,13 +2708,17 @@
       if (emp) emp.remove();
 
       var now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var modeBadge = APP_MODE === 'online'
+        ? '<span class="log-mode-badge cloud">☁️ Cloud</span>'
+        : '<span class="log-mode-badge local">💻 Local</span>';
+
       var div = document.createElement('div');
       div.className = 'log-entry';
       div.innerHTML =
         '<div class="av av-' + side.toLowerCase() + '">' + side + '</div>' +
         '<div class="lc">' +
         '<div class="lo">' + escHtml(orig) + ' <span style="font-size:.69rem;color:var(--text-3)">[' + srcName + ']</span></div>' +
-        '<div class="lt">&#8594; ' + escHtml(tr) + ' <span style="font-size:.68rem;color:var(--text-3)">[' + tgtName + ']</span></div>' +
+        '<div class="lt">&#8594; ' + escHtml(tr) + ' <span style="font-size:.68rem;color:var(--text-3)">[' + tgtName + ']</span>' + modeBadge + '</div>' +
         '<div class="ltime">' + now + '</div>' +
         '</div>';
       wrap.appendChild(div);
@@ -1863,6 +2739,51 @@
       c.appendChild(t);
       setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 4200);
     }
+
+    // ══════════════════════════════════════════════════════
+    //  INITIALIZATION ON LOAD
+    // ══════════════════════════════════════════════════════
+    window.addEventListener('DOMContentLoaded', function () {
+      var srvInput = document.getElementById('serverUrl');
+      if (srvInput) srvInput.value = SERVER_URL;
+
+      // Restore saved keys
+      var dk = localStorage.getItem('dg_key');
+      var gk = localStorage.getItem('groq_key');
+      if (dk) {
+        var dgi = document.getElementById('deepgramKey');
+        if (dgi) dgi.value = dk;
+        DG_KEY = dk;
+        setDotStatus('dgDot', 'dgStatus', 'ok', 'Deepgram (Saved)');
+      }
+      if (gk) {
+        var gki = document.getElementById('groqKey');
+        if (gki) gki.value = gk;
+        GROQ_KEY = gk;
+        setDotStatus('groqDot', 'groqStatus', 'ok', 'Groq (Saved)');
+      }
+
+      // Initialize engine mode (Local AI vs Online APIs)
+      var savedMode = localStorage.getItem('app_mode') || 'local';
+      setAppMode(savedMode, true);
+
+      // Check local backend server
+      checkLocalServer(false);
+
+      // Refresh local memory stats periodically when in local mode
+      setInterval(function () {
+        if (!active.A && !active.B && APP_MODE === 'local') checkLocalServer(true);
+      }, 9000);
+    });
+
+    ['deepgramKey', 'groqKey'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') connectOnlineAll();
+        });
+      }
+    });
   </script>
 </body>
 

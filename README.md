@@ -1,148 +1,145 @@
-# 🌐 LinguaSync: Real-Time AI Voice Translator
+# 🌐 LinguaSync: 100% Local AI Voice Translator
 
 <div align="center">
 
-![LinguaSync Banner](https://img.shields.io/badge/LinguaSync-Real--Time%20Voice%20Translator-7c3aed?style=for-the-badge)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Deepgram](https://img.shields.io/badge/Deepgram-STT%20%26%20TTS-13EF93?style=for-the-badge)
-![Groq](https://img.shields.io/badge/Groq-gpt--oss--120b-F55036?style=for-the-badge)
+![LinguaSync Banner](https://img.shields.io/badge/LinguaSync-100%25%20Local%20Voice%20Translator-7c3aed?style=for-the-badge)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Faster--Whisper](https://img.shields.io/badge/Faster--Whisper-STT%20(int8)-00d4aa?style=for-the-badge)
+![MarianMT](https://img.shields.io/badge/MarianMT-Neural%20Translation-6c63ff?style=for-the-badge)
+![pyttsx3](https://img.shields.io/badge/pyttsx3-Local%20TTS-f43f5e?style=for-the-badge)
+![RAM](https://img.shields.io/badge/RAM-8GB%20Optimized-success?style=for-the-badge)
 
 <p align="center">
-  A sleek, real-time, bidirectional voice translator with a futuristic glassmorphic UI. Speak in one language, see live streaming transcriptions, translate via ultra-fast LLMs, and listen to spoken translations with automated turn-taking.
+  A state-of-the-art, <b>100% local, bidirectional voice translator</b> with a futuristic glassmorphic UI. Runs completely on your local machine with <b>zero external API keys or cloud dependencies</b>, specifically optimized to operate smoothly on <b>8GB RAM</b> CPU systems.
 </p>
 
 </div>
 
 ---
 
-## ✨ Features
+## ✨ Key Capabilities & Dual Engine Modes
 
-- **🎙️ Real-Time Streaming STT (Deepgram Nova-2)**:
-  - Streams microphone audio chunk-by-chunk via WebSockets (`wss://api.deepgram.com/v1/listen`).
-  - Live interim transcriptions as you speak, with smart formatting and VAD endpointing.
-- **🧠 Ultra-Fast Neural Translation (Groq)**:
-  - Powered by `openai/gpt-oss-120b` for instant, context-aware translation.
-  - Zero fluff or meta-commentary—pure, accurate interpretation.
-- **🔊 Hybrid High-Fidelity TTS**:
-  - **Deepgram Aura**: Natural, lifelike speech synthesis (`aura-asteria-en`, `aura-2-aquila-es`, etc.).
-  - **Native Hindi Engine**: Dedicated native speech synthesis (`hi-IN`) for authentic, flawless Devanagari Hindi pronunciation.
-  - Automatic fallback to browser `speechSynthesis` ensures voice playback never fails.
-- **🔄 Auto-Turn Conversation Mode**:
-  - Automatically alternates the active microphone between Speaker A and Speaker B once translation playback finishes.
-  - Enables hands-free, seamless two-way dialogue without manual button clicks.
-- **🛡️ Persistent Microphone Stream**:
-  - Solves browser permission fatigue on `file://` and local origins by retaining an active audio stream across the session.
-- **🎨 Glassmorphic Aesthetic**:
-  - Modern dark mode with floating ambient orbs, responsive glass cards, animated real-time audio waveforms, and full conversation history.
+LinguaSync features a seamless **Mode Switcher** directly in the UI header, letting you toggle with a single click between **100% Local AI** and **High-Performance Cloud APIs**:
+
+### 💻 1. Local AI Mode (Offline & Private)
+- **Zero External Dependencies**: Operates 100% on CPU without API keys, subscriptions, or external network requests.
+- **Speech-to-Text**: `faster-whisper-small` (int8) powered by CTranslate2. Transcribes Hindi in native Devanagari script and English with low latency.
+- **Neural Machine Translation**: `Helsinki-NLP / MarianMT` offline models with an intelligent LRU memory cache (<600MB footprint) and English pivot translation for cross-lingual pairs.
+- **Text-to-Speech**: Local Windows SAPI5 engine via `pyttsx3` with client-side Web Speech API OS voice fallback.
+- **8GB RAM Budget**: Hardware telemetry actively monitors memory usage to keep total consumption well within 8GB RAM.
+
+### ☁️ 2. Online APIs Mode (Cloud Power)
+- **Deepgram nova-2 STT**: Real-time streaming WebSocket speech recognition with intelligent endpointing and VAD.
+- **Groq LLM (openai/gpt-oss-120b)**: Instantaneous neural translations powered by `openai/gpt-oss-120b` on Groq's high-speed inference engine.
+- **Deepgram Aura + Google TTS**: High-fidelity natural voice synthesis (Deepgram Aura models for English/European languages and Google TTS audio stream for Hindi).
+- **Persistent Key Storage**: Securely stores API keys locally in browser `localStorage`.
+
+### 🔄 Shared Features Across Both Modes
+- **Dual-Channel Live Waveforms**: Real-time microphone level animation on both speaker channels.
+- **Auto-Turn Conversation**: Automatically switches the microphone between speakers after voice playback finishes for hands-free chatting.
+- **Tagged Conversation History**: Logs every utterance with clickable replay and `[💻 Local]` / `[☁️ Cloud]` mode indicators.
 
 ---
 
-## 🛠️ Architecture & Pipeline
+## 🏗️ System Architecture
 
 ```text
-Speaker A speaks (e.g. English)
+Speaker A speaks into Microphone
     │
     ▼
-MediaRecorder (WebM/Opus Chunks)
+MediaRecorder (Audio chunks / Opus / WebM)
     │
     ▼
-Deepgram WebSocket (Nova-2 STT)
-    │  └─► Live interim text displayed
-    ▼
-Speech Final / Utterance End
+Local Backend Server (FastAPI on http://127.0.0.1:8000)
+    ├─► /ws/transcribe & /api/transcribe
+    │    └─► Faster-Whisper (Tiny int8 on CPU) ➔ Transcribed Text
+    │
+    ├─► /api/translate
+    │    └─► MarianMT Neural MT (LRU Cached, <600MB footprint) ➔ Translated Text
+    │
+    └─► /api/tts
+         └─► pyttsx3 / Windows SAPI5 ➔ Local WAV Audio Stream
     │
     ▼
-Groq API (openai/gpt-oss-120b)
-    │  └─► Translates English ➔ Hindi
-    ▼
-TTS Engine (Native Hindi / Deepgram Aura)
-    │  └─► Speaks translation aloud through speaker
-    ▼
-Auto-Turn Trigger
+Browser plays translated voice audio
     │
     ▼
-Microphone switches to Speaker B (Hindi) automatically!
+Auto-Turn Handler: Automatically activates Speaker B's microphone!
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started
 
 ### 1. Requirements
-- A modern web browser (Google Chrome, Microsoft Edge, Brave, etc.).
-- API Keys:
-  - **[Deepgram API Key](https://console.deepgram.com/)** (Used for Nova-2 STT and Aura TTS).
-  - **[Groq API Key](https://console.groq.com/)** (Used for `openai/gpt-oss-120b` translation).
+- Windows, macOS, or Linux.
+- Python 3.10+ (tested on Python 3.12).
+- 8GB RAM or more.
 
-### 2. Running the App
+### 2. Set Up a Virtual Environment (`venv`)
+> [!IMPORTANT]
+> A dedicated Python virtual environment (`venv`) is required to isolate dependencies (`faster-whisper`, `ctranslate2`, `torch`, `transformers`) and prevent package version collisions.
 
-You can run LinguaSync directly without any build step:
-
-#### Option A: Direct File Open
-Double-click `index.html` or open it directly in your browser:
-```text
-file:///path/to/real-time-voice-translator/index.html
+**On Windows (Command Prompt):**
+```cmd
+python -m venv venv
+venv\Scripts\activate
 ```
 
-#### Option B: Local Static Server (Recommended)
-Using Python or Node static server:
+**On Windows (PowerShell):**
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+*(If PowerShell blocks script execution, first enable remote signed scripts: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`)*
+
+**On macOS / Linux:**
 ```bash
-# Using Python
-python -m http.server 3000
-
-# OR using npx serve
-npx serve .
+python3 -m venv venv
+source venv/bin/activate
 ```
-Then navigate to `http://localhost:3000` in your browser.
+
+### 3. Install Dependencies
+Ensure your virtual environment is active (you will see `(venv)` in your terminal prompt), then run:
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Start the Backend Server
+With your virtual environment active:
+
+- **Using the One-Click Launcher**:
+  - Double click **`start_server.bat`** (Command Prompt), or run `./start_server.ps1` (PowerShell).
+  - The script automatically detects and activates your `venv`, starts the server, and opens your browser.
+
+- **Or start manually**:
+  ```bash
+  python server.py
+  ```
+  The server will initialize on `http://127.0.0.1:8000`.
+
+### 5. Open the Application
+Navigate to:
+```text
+http://127.0.0.1:8000/
+```
+*(Always open via `http://127.0.0.1:8000/` instead of `file:///` so your browser can grant microphone access in a secure context).*
 
 ---
 
-## 🔑 Configuration
+## 📡 Backend API Reference
 
-1. Open `index.html`.
-2. Enter your **Deepgram API Key** and **Groq API Key** in the top configuration card.
-3. Click **Connect** (keys are saved securely in your browser's `localStorage` for future visits).
-4. Select the desired languages for **Speaker A** and **Speaker B** (default: English ↔ Hindi).
-
----
-
-## 🗣️ Supported Languages
-
-LinguaSync supports bidirectional translation across major global languages, including:
-- 🇬🇧 English (`en`)
-- 🇮🇳 Hindi (`hi`)
-- 🇪🇸 Spanish (`es`)
-- 🇫🇷 French (`fr`)
-- 🇩🇪 German (`de`)
-- 🇨🇳 Chinese (`zh`)
-- 🇯🇵 Japanese (`ja`)
-- 🇰🇷 Korean (`ko`)
-- 🇷🇺 Russian (`ru`)
-- 🇸🇦 Arabic (`ar`)
-- 🇧🇷 Portuguese (`pt`)
-- 🇮🇹 Italian (`it`)
-- 🇹🇷 Turkish (`tr`)
-- 🇳🇱 Dutch (`nl`)
-- 🇵🇱 Polish (`pl`)
-- 🇸🇪 Swedish (`sv`)
-- 🇺🇦 Ukrainian (`uk`)
-- 🇮🇩 Indonesian (`id`)
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/api/status` | `GET` | Health check, CPU/RAM usage, and loaded model status |
+| `/api/transcribe` | `POST` | Transcribes uploaded audio file (`file: UploadFile`, `lang: str`) |
+| `/ws/transcribe` | `WebSocket` | Real-time audio streaming transcription |
+| `/api/translate` | `POST` | Neural translation (`{ text, source_lang, target_lang }`) |
+| `/v1/chat/completions` | `POST` | OpenAI-compatible translation completion endpoint |
+| `/api/tts` | `GET` / `POST` | Synthesizes text to local WAV audio stream |
+| `/` | `GET` | Serves the LinguaSync frontend web application |
 
 ---
 
-## 💡 Controls
-
-| Control | Function |
-|---|---|
-| **🎤 Record / ⬛ Stop** | Start or stop listening on that speaker's channel. |
-| **🔄 Auto-Turn** | Toggle automatic switching of turns between Speaker A and Speaker B. |
-| **⇄ Swap** | Instantly swap the languages of Speaker A and Speaker B. |
-| **🔊 Replay** | Replay the latest spoken translation. |
-| **🗑️ Clear** | Clear speech and translation text from the panel. |
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
+## 🛡️ License
+MIT License. Open source and free for personal and commercial use.
